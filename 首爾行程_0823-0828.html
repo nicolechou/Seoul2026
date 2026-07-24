@@ -433,9 +433,14 @@ a.map-link:focus-visible,a.day-pill:focus-visible,a.route-btn:focus-visible,.ico
     <div class="tip-note">
       <b>提醒：</b>首爾轉乘路線偶爾會調整，建議出發前用 <b>Naver Map</b> 或 <b>Kakao Map</b> 再次確認即時步行導航（Google Map 在韓國無法顯示步行路線）。頁面中的地圖與連結僅供標示景點位置與大致路線參考，實際步行導航仍以 Naver／Kakao Map 為準。地圖縮圖為「地圖預覽」而非現場照片，特此說明。
     </div>
-    <button class="export-btn" onclick="window.print()">
-      <svg width="14" height="14"><use href="#i-download"/></svg>匯出 PDF（開啟列印視窗，另存為 PDF）
-    </button>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="export-btn" onclick="window.print()">
+        <svg width="14" height="14"><use href="#i-download"/></svg>匯出 PDF（開啟列印視窗，另存為 PDF）
+      </button>
+      <button class="export-btn" onclick="downloadTxt()">
+        <svg width="14" height="14"><use href="#i-download"/></svg>下載簡化 TXT
+      </button>
+    </div>
   </div>
 </header>
 
@@ -505,7 +510,7 @@ const CAT_VAR   = {sight:'--cat-sight', meal:'--cat-food', fan:'--cat-fan', shop
 
 const days = [
   {
-    n:1, iso:'2026-08-23', date:"8/23（日）", theme:"抵達日：長忠洞豬腳＋明洞夜間採買", color:'--d1',
+    n:1, iso:'2026-08-23', date:"8/23（日）", theme:"抵達日：長忠洞豬腳＋明洞夜間採買", shortTitle:'中區：長忠洞豬腳＋明洞採買', emoji:'🌆', color:'--d1',
     arrivalNote:{
       title:'✈ 機場 → 飯店',
       items:[
@@ -515,14 +520,14 @@ const days = [
       ]
     },
     stops:[
-      {kind:'sight', name:'長忠洞豬腳街', ko:'장충동 족발거리', query:'장충동 족발거리 서울', duration:'20–30分鐘（街區閒逛）',
+      {kind:'sight', name:'長忠洞豬腳街', ko:'장충동 족발거리', query:'장충동 족발거리 서울', duration:'20–30分鐘（街區閒逛）', slot:'傍晚', short:'十多間老字號豬腳店聚集的美食街',
         transit:{mode:'subway', text:'地鐵3號線 忠武路→東大入口（1站，約3分鐘）＋步行8分鐘；或直接叫車約10分鐘'},
         desc:'韓國最知名的豬腳一條街，聚集十多間老字號豬腳店，以醬油、中藥材長時間燉煮豬腳皮聞名，是首爾人的宵夜／聚餐首選。',
         rating:'在地經典美食街', nearby:'地鐵東大入口站步行即達'},
-      {kind:'meal', name:'장충동 평안도족발', ko:'長忠洞平安道豬腳', query:'장충동평안도족발', duration:'60–90分鐘（用餐）',
+      {kind:'meal', name:'장충동 평안도족발', ko:'長忠洞平安道豬腳', query:'장충동평안도족발', duration:'60–90分鐘（用餐）', slot:'晚餐', short:'甲子老店，豬皮Q彈不油膩',
         desc:'長忠洞豬腳街的元老名店之一，創業超過一甲子，豬皮Q彈不油膩，附生菜、蒜片、味噌解膩，長途飛行後補元氣的暖胃選擇。',
         rating:'百年老街人氣名店', nearby:'同條街聚集多家老字號豬腳店'},
-      {kind:'shop', name:'明洞', ko:'명동', query:'명동 명동거리', duration:'60–120分鐘（購物）',
+      {kind:'shop', name:'明洞', ko:'명동', query:'명동 명동거리', duration:'60–120分鐘（購物）', slot:'夜晚', short:'24小時美妝購物街，順路採買日用品',
         transit:{mode:'taxi', text:'計程車約10分鐘；或步行回忠武路後轉搭地鐵1站約5分鐘'},
         desc:'24小時不打烊的美妝／潮流購物街，晚上依然人潮洶湧。順路採買 Olive Young 明洞旗艦店、Daiso 明洞店、GS25／CU 便利商店（水、零食、隔天早餐）。',
         rating:'首爾指標購物商圈', nearby:'24小時營業，距南山、乙支路皆步行可達'}
@@ -541,37 +546,37 @@ const days = [
       rating:'政府認證百年老店', nearby:'與장충동 평안도족발同一條街，備案幾乎零移動'}
   },
   {
-    n:2, iso:'2026-08-24', date:"8/24（一）", theme:"景福宮周邊：韓服＋北村＋昌德宮＋仁寺洞＋HiKR GROUND＋一隻雞", color:'--d2',
+    n:2, iso:'2026-08-24', date:"8/24（一）", theme:"景福宮周邊：韓服＋北村＋昌德宮＋仁寺洞＋HiKR GROUND＋一隻雞", shortTitle:'鐘路區：景福宮周邊韓服巡禮', emoji:'🏯', color:'--d2',
     stops:[
-      {kind:'meal', name:'早餐：Isaac Toast／London Bagel Museum', ko:'아이작 토스트 · 런던 베이글 뮤지엄', query:'London Bagel Museum 안국', duration:'30–45分鐘（早餐）',
+      {kind:'meal', name:'Isaac Toast／London Bagel Museum', ko:'아이작 토스트 · 런던 베이글 뮤지엄', query:'London Bagel Museum 안국', duration:'30–45分鐘（早餐）', slot:'早餐', short:'Isaac吐司光速外帶，或LBM排隊神店',
         transit:{mode:'subway', text:'地鐵3號線 忠武路→安國（約2站，6–8分鐘）；建議7:30前抵達London Bagel Museum現場或線上取號，8:00改吃Isaac Toast也是不錯的備案'},
         desc:'景福宮站旁光速外帶首選Isaac Toast，或安國站排隊神店London Bagel Museum，建議越早抵達越好，避免9點後大排長龍。',
         rating:'安國站排隊人氣名店', nearby:'兩者分別鄰近景福宮站與安國站，依起床時間彈性二選一'},
-      {kind:'sight', name:'景福宮', ko:'경복궁', query:'경복궁', duration:'90–120分鐘（韓服體驗＋拍照）',
+      {kind:'sight', name:'景福宮', ko:'경복궁', query:'경복궁', duration:'90–120分鐘（韓服體驗＋拍照）', slot:'上午', short:'穿韓服免費入場，拍無人空景',
         transit:{mode:'walk', text:'步行約10–15分鐘，或地鐵3號線安國→景福宮（1站）；9:00前抵達可搶第一批入場拍無人空景'},
         desc:'穿韓服可免費入場，是首爾最具代表性的傳統宮殿，建議换上韓服後第一批衝進宮內拍空景。',
         rating:'首爾五大宮之首', nearby:'週邊多家韓服租借店，租借後可直接入場'},
-      {kind:'sight', name:'北村韓屋村', ko:'북촌한옥마을', query:'북촌한옥마을', duration:'45–60分鐘（散步拍照）',
+      {kind:'sight', name:'北村韓屋村', ko:'북촌한옥마을', query:'북촌한옥마을', duration:'45–60分鐘（散步拍照）', slot:'中午', short:'傳統韓屋巷弄，古風打卡',
         transit:{mode:'walk', text:'步行約10–15分鐘（景福宮東側，坡道街景，脫下韓服後慢步遊逛）'},
         desc:'保存完整的傳統韓屋巷弄，古風濃厚，是首爾最具人氣的韓屋街景打卡地。',
         rating:'首爾經典韓屋街景', nearby:'與景福宮、昌德宮呈三角形分佈，步行皆可達'},
-      {kind:'sight', name:'昌德宮', ko:'창덕궁', query:'창덕궁', duration:'60–90分鐘（含後苑）',
+      {kind:'sight', name:'昌德宮', ko:'창덕궁', query:'창덕궁', duration:'60–90分鐘（含後苑）', slot:'中午', short:'世界遺產，後苑景致優美',
         transit:{mode:'walk', text:'步行約10分鐘'},
         desc:'世界文化遺產，後苑（祕苑）景致優美，是五大宮中最保留自然原貌的一座。',
         rating:'UNESCO世界文化遺產', nearby:'後苑需另外預約導覽時段，建議提前上官網確認'},
-      {kind:'shop', name:'仁寺洞', ko:'인사동', query:'인사동', duration:'45–60分鐘（逛街＋下午茶）',
+      {kind:'shop', name:'仁寺洞', ko:'인사동', query:'인사동', duration:'45–60分鐘（逛街＋下午茶）', slot:'下午', short:'傳統工藝逛街，喝下午茶',
         transit:{mode:'walk', text:'步行約10分鐘，延伸逛街吃下午茶'},
         desc:'傳統工藝品店與人人廣場（쌈지길）聚集的文青逛街去處，適合買紀念品、喝下午茶。',
         rating:'傳統工藝購物街代表', nearby:'鄰近北村、昌德宮，同屬鐘路徒步範圍'},
-      {kind:'fan', name:'HiKR GROUND', ko:'하이커그라운드', query:'HiKR GROUND 청계천', duration:'45–60分鐘（免費體驗）',
+      {kind:'fan', name:'HiKR GROUND', ko:'하이커그라운드', query:'HiKR GROUND 청계천', duration:'45–60分鐘（免費體驗）', slot:'傍晚', short:'免費K-pop體驗館，拍MV場景',
         transit:{mode:'walk', text:'步行約10–15分鐘（清溪川旁，韓國觀光公社大樓）'},
         desc:'韓國觀光公社打造的免費K-pop體驗館，可拍偶像頂級舞台與MV拍攝場景短影音，2至4樓為主要體驗區，週一休館。',
         rating:'免費開放，10:00–19:00（週一休館）', nearby:'位於中區清溪川路40號，韓國觀光公社1–5樓'},
-      {kind:'meal', name:'陳玉華奶奶元祖一隻雞', ko:'진옥화할매원조닭한마리', query:'진옥화할매원조닭한마리', duration:'60–90分鐘（晚餐）',
+      {kind:'meal', name:'陳玉華奶奶元祖一隻雞', ko:'진옥화할매원조닭한마리', query:'진옥화할매원조닭한마리', duration:'60–90分鐘（晚餐）', slot:'晚餐', short:'東大門一隻雞元祖名店',
         transit:{mode:'taxi', text:'計程車約5–10分鐘直達東大門一隻雞一條街'},
         desc:'1978年創立，東大門一隻雞一條街的元祖名店，只賣닭한마리單一菜色，湯頭濃郁，可加點年糕、麵條等各式사리，犒賞逛了一整天的雙腿。',
         rating:'diningcode★4.3', nearby:'位於東大門綜合市場食街，同條巷弄還有多家닭한마리老店'},
-      {kind:'sight', name:'東大門SPAREX汗蒸幕桑拿', ko:'스파렉스 동대문점', query:'SPAREX 동대문', duration:'不限（可過夜）',
+      {kind:'sight', name:'東大門SPAREX汗蒸幕桑拿', ko:'스파렉스 동대문점', query:'SPAREX 동대문', duration:'不限（可過夜）', slot:'夜晚', short:'24小時汗蒸幕，敷面膜消水腫',
         transit:{mode:'walk', text:'步行約5–10分鐘'},
         desc:'24小時營業的傳統汗蒸幕桑拿，敷面膜、喝冰甜米釀消水腫，適合追星走跳一整天後的深夜收尾行程。',
         rating:'東大門在地24小時桑拿', nearby:'可直接在此過夜留宿，隔天再返回或直接前往下一日行程'}
@@ -590,29 +595,29 @@ const days = [
       rating:'diningcode★3.9', nearby:'與진옥화할매同條巷弄，幾乎零移動'}
   },
   {
-    n:3, iso:'2026-08-25', date:"8/25（二）", theme:"聖水洞韓流曠野：Cafe Onion＋KWANGYA＋首爾林＋金豬食堂", color:'--d3',
+    n:3, iso:'2026-08-25', date:"8/25（二）", theme:"聖水洞韓流曠野：Cafe Onion＋KWANGYA＋首爾林＋金豬食堂", shortTitle:'東北區：聖水洞韓流曠野', emoji:'🎶', color:'--d3',
     stops:[
-      {kind:'meal', name:'Cafe Onion 聖水店', ko:'카페 어니언 성수', query:'카페 어니언 성수', duration:'30–45分鐘（早餐）',
+      {kind:'meal', name:'Cafe Onion 聖水店', ko:'카페 어니언 성수', query:'카페 어니언 성수', duration:'30–45分鐘（早餐）', slot:'早餐', short:'工業風烘焙咖啡館，人氣麵包＋拿鐵',
         transit:{mode:'subway', text:'地鐵3號線 忠武路→을지로3가（1站）→轉乘2號線→성수（約8站），全程約20–25分鐘；或計程車約20分鐘。建議7:50前抵達，9點後常需排隊30分鐘以上'},
         desc:'聖水洞最早紅起來的工業廢墟風咖啡廳，招牌是灑滿糖粉的雪山麵包（Pandoro）與鹽可頌，8:00開始營業。',
         rating:'首爾人氣文青咖啡代表', nearby:'聖水站2號出口步行約3分鐘'},
-      {kind:'sight', name:'聖水洞文青街／咖啡街', ko:'성수동카페거리', query:'성수동카페거리', duration:'45–60分鐘（逛街）',
+      {kind:'sight', name:'聖水洞文青街／咖啡街', ko:'성수동카페거리', query:'성수동카페거리', duration:'45–60分鐘（逛街）', slot:'上午', short:'小店、咖啡廳、應援旗',
         transit:{mode:'walk', text:'全程步行即可，沿路邊逛邊走'},
         desc:'各大品牌快閃店與潮流選品店聚集的核心街區，每天都有不同美妝、時尚品牌快閃店；Dior聖水旗艦店的奢華外牆也是必拍打卡點。出發前可上X／IG搜尋「#성수팝업」查詢當週有無本命偶像代言的快閃店。',
         rating:'聖水洞潮流核心街區', nearby:'串連Cafe Onion與KWANGYA SEOUL之間'},
-      {kind:'fan', name:'KWANGYA SEOUL 曠野旗艦店', ko:'광야 서울', query:'KWANGYA SEOUL 성수', duration:'45–60分鐘（拍照選購）',
+      {kind:'fan', name:'KWANGYA SEOUL 曠野旗艦店', ko:'광야 서울', query:'KWANGYA SEOUL 성수', duration:'45–60分鐘（拍照選購）', slot:'下午', short:'SM打歌服＋周邊＋拍貼機',
         transit:{mode:'walk', text:'全程步行即可'},
         desc:'SM娛樂旗艦概念店，位於SM Entertainment大樓地下1樓，直通首爾林站，充滿大螢幕MV、打歌服展示與最新周邊；限定人生四格拍貼機建議一進店先排隊，地下街柱子與地板上也藏有SM藝人親筆簽名。',
         rating:'SM旗艦概念店', nearby:'地鐵首爾林站4號出口連通道，SM Entertainment大樓B1'},
-      {kind:'sight', name:'首爾林公園', ko:'서울숲', query:'서울숲', duration:'45–60分鐘（散步）',
+      {kind:'sight', name:'首爾林公園', ko:'서울숲', query:'서울숲', duration:'45–60分鐘（散步）', slot:'傍晚', short:'散步、拍照、偶像應援牆',
         transit:{mode:'walk', text:'從KWANGYA走上地面即達，全程步行'},
         desc:'首爾市區大型生態公園，也是粉絲集資認領應援長椅的聖地（如BTS RM、防彈成員、NCT等），可特別尋找粉絲栽種的「RM森林1號、2號」與「BENCH PARK」。',
         rating:'首爾人氣都市公園', nearby:'與KWANGYA SEOUL共用首爾林站出入口'},
-      {kind:'meal', name:'金豬食堂', ko:'금돼지식당', query:'금돼지식당', duration:'90–120分鐘（晚餐）',
+      {kind:'meal', name:'金豬食堂', ko:'금돼지식당', query:'금돼지식당', duration:'90–120分鐘（晚餐）', slot:'晚餐', short:'BTS、EXO愛店烤肉',
         transit:{mode:'taxi', text:'首爾林 → 藥水站：計程車約12–15分鐘（約7,000–9,000₩）；或地鐵水仁盆唐線轉2號線轉3號線至藥水站2號出口。不能線上預約，建議15:30–16:00現場機器登記，避開18:00後2–3小時的排隊高峰'},
         desc:'首爾三大烤肉名店之一，連續多年入選米其林指南與必比登推介，帶骨五花肉與豬皮極度美味，BTS JM、JK、EXO朴燦烈、東方神起等藝人皆多次造訪。',
         rating:'米其林指南連續入選', nearby:'藥水站2號出口步行約149公尺'},
-      {kind:'sight', name:'東大門設計廣場 DDP', ko:'동대문디자인플라자', query:'동대문디자인플라자', duration:'60–90分鐘（夜間散策＋展覽）',
+      {kind:'sight', name:'東大門設計廣場 DDP', ko:'동대문디자인플라자', query:'동대문디자인플라자', duration:'60–90分鐘（夜間散策＋展覽）', slot:'夜晚', short:'建築夜拍',
         transit:{mode:'subway', text:'藥水站搭3號線轉2號線，3站即達東大門歷史文化公園站，1號出口直通'},
         desc:'札哈．哈蒂設計的流線建築地標，像一艘降落在市中心的銀色巨型飛碟，夜晚點燈後科技感十足，也常是K-pop頒獎典禮、時裝週與MV的拍攝背景。',
         rating:'首爾建築地標', nearby:'東大門歷史文化公園站1號出口直通'}
@@ -631,33 +636,33 @@ const days = [
       rating:'diningcode★4.2', nearby:'與금돼지식당同屬藥水／青丘一帶，幾乎零移動'}
   },
   {
-    n:4, iso:'2026-08-26', date:"8/26（三）", theme:"汝矣島現代百貨＋漢江公園：弘大夜生活", color:'--d4',
+    n:4, iso:'2026-08-26', date:"8/26（三）", theme:"汝矣島現代百貨＋漢江公園：弘大夜生活", shortTitle:'汝矣島＋弘大：現代百貨與夜生活', emoji:'🌃', color:'--d4',
     stops:[
-      {kind:'meal', name:'Fritz Coffee Company', ko:'프릳츠 커피 컴퍼니', query:'프릳츠 커피 컴퍼니 마포', duration:'30–45分鐘（早餐）',
+      {kind:'meal', name:'Fritz Coffee Company', ko:'프릳츠 커피 컴퍼니', query:'프릳츠 커피 컴퍼니 마포', duration:'30–45分鐘（早餐）', slot:'早餐', short:'韓屋改建咖啡店，招牌可頌',
         transit:{mode:'taxi', text:'計程車約15–20分鐘；或地鐵4號線轉5號線約25分鐘'},
         desc:'以復古「海狗」為吉祥物的韓國元老級精品咖啡店，手沖咖啡深受咖啡愛好者推崇，可頌與藍莓丹麥酥是招牌。麻浦總店由百年韓屋改建，08:00開始營業，建議早點抵達享受陽光灑落韓屋中庭的早餐時光。',
         rating:'韓國精品咖啡代表品牌', nearby:'市廳／德壽宮周邊亦有分店可選'},
-      {kind:'shop', name:'The Hyundai Seoul', ko:'더현대 서울', query:'더현대 서울', duration:'90–120分鐘（快閃店＋逛街）',
+      {kind:'shop', name:'The Hyundai Seoul', ko:'더현대 서울', query:'더현대 서울', duration:'90–120分鐘（快閃店＋逛街）', slot:'上午', short:'人氣百貨，地下偶像快閃店',
         transit:{mode:'subway', text:'地鐵5號線至汝矣渡口站1號出口步行，或汝矣島站地下連通道直達，全程約10分鐘'},
         desc:'首爾目前人氣最高的室內巨型綠色百貨。地下B1（Event Plaza）是全首爾最密集的偶像回歸快閃店基地（PLAVE、NewJeans、TXT等皆曾在此舉辦），地下B2為潮流聖地（Mardi Mercredi、Matinkim等品牌），快閃店常一早在百貨外排隊領號碼牌，建議一到館內先直奔地下室。',
         rating:'首爾人氣指標百貨', nearby:'汝矣島站地下連通道直達'},
-      {kind:'meal', name:'滿足五香豬腳 汝矣島店', ko:'만족오향족발 여의도점', query:'만족오향족발 여의도', duration:'60–90分鐘（午餐）',
+      {kind:'meal', name:'滿足五香豬腳 汝矣島店', ko:'만족오향족발 여의도점', query:'만족오향족발 여의도', duration:'60–90分鐘（午餐）', slot:'午餐', short:'必比登豬腳，附年糕餃子湯',
         transit:{mode:'walk', text:'現代百貨對面，步行可達'},
         desc:'連續多年榮獲米其林必比登推介，豬腳肉質軟嫩，中藥五香入味，皮Q彈帶微甜膠質，隨餐附贈年糕餃子湯。',
         rating:'米其林必比登推介（連續9年）', nearby:'現代百貨對面即達，不用跑回市廳總店'},
-      {kind:'sight', name:'汝矣島漢江公園', ko:'여의도한강공원', query:'여의도한강공원', duration:'60–90分鐘（野餐放鬆）',
+      {kind:'sight', name:'汝矣島漢江公園', ko:'여의도한강공원', query:'여의도한강공원', duration:'60–90分鐘（野餐放鬆）', slot:'下午', short:'漢江野餐，自煮泡麵',
         transit:{mode:'walk', text:'步行約8–10分鐘'},
         desc:'首爾最經典的漢江公園之一，比盤浦更寬廣。可在公園入口超商點炸雞外送，或買泡麵用自助煮麵機加顆雞蛋，在草地上邊吹江風邊享用，體驗正宗韓劇生活。',
         rating:'首爾經典漢江公園', nearby:'與現代百貨、滿足五香豬腳步行皆可達，同屬汝矣島核心區'},
-      {kind:'sight', name:'弘大商圈', ko:'홍대상권', query:'홍대', duration:'60–90分鐘（街頭表演＋拍貼）',
+      {kind:'sight', name:'弘大商圈', ko:'홍대상권', query:'홍대', duration:'60–90分鐘（街頭表演＋拍貼）', slot:'傍晚', short:'街頭表演，特色拍貼店',
         transit:{mode:'taxi', text:'漢江公園→弘大：搭753或5714號公車約15分鐘跨麻浦大橋直達；或計程車約12分鐘（約8,000₩）'},
         desc:'街頭藝人激戰區，傍晚17:00後各路舞團會出來熱舞。弘大現在有許多「高空俯瞰視角」特色拍貼店（如Don’t Lxxk Up），拍出極具Y2K街頭感的照片，值得體驗。',
         rating:'弘大街頭表演＋特色拍貼', nearby:'弘大入口站周邊，緊鄰延南洞'},
-      {kind:'meal', name:'延南洞特色餐廳（延南蓮花／5to7）', ko:'연남물갈비 · 5to7', query:'연남물갈비', duration:'60–90分鐘（晚餐）',
+      {kind:'meal', name:'延南洞特色餐廳（延南蓮花／5to7）', ko:'연남물갈비 · 5to7', query:'연남물갈비', duration:'60–90分鐘（晚餐）', slot:'晚餐', short:'延南蓮花爆肉鍋或創意料理',
         transit:{mode:'walk', text:'弘大站3號出口步行至延南洞，同商圈步行範圍內'},
         desc:'晚餐由弘大步行至隔壁延南洞，推薦人氣爆肉火山鍋「延南蓮花（연남물갈비）」或創意料理「五大洋義大利麵（5to7）」，這裡也有很多韓式Fusion調酒與洋風煎餅小店。',
         rating:'延南洞人氣創意料理', nearby:'弘大站3號出口，與弘大商圈同一散步範圍'},
-      {kind:'sight', name:'弘大夜店酒吧區', ko:'홍대 클럽거리', query:'홍대 클럽거리', duration:'不限（夜生活）',
+      {kind:'sight', name:'弘大夜店酒吧區', ko:'홍대 클럽거리', query:'홍대 클럽거리', duration:'不限（夜生活）', slot:'夜晚', short:'弘大夜生活，記得帶護照',
         transit:{mode:'walk', text:'延南洞步行返回弘大夜店街（弘益大學正門外圍），全程步行'},
         desc:'全首爾最無包袱、最年輕好玩的夜生活特區。喜歡Hip-hop可去Madholic；喜歡K-POP混音與電音可去NB2（YG娛樂開的始祖級夜店）。務必攜帶實體護照（韓國夜店嚴格查驗，不接受照片或外國身份證影本），並結伴同行注意安全。',
         rating:'弘大代表夜店酒吧區', nearby:'鄰近弘益大學正門，延南洞步行可達'}
@@ -676,25 +681,25 @@ const days = [
       rating:'延南洞人氣炸豬排店', nearby:'與延南蓮花同屬延南洞商圈，步行可達'}
   },
   {
-    n:5, iso:'2026-08-27', date:"8/27（四）", theme:"追星重點日：狎鷗亭K-Star Road＋HYBE＋COEX＋樂天世界塔", color:'--d5',
+    n:5, iso:'2026-08-27', date:"8/27（四）", theme:"追星重點日：狎鷗亭K-Star Road＋HYBE＋COEX＋樂天世界塔", shortTitle:'江南區：K-Star Road＋HYBE＋樂天世界塔', emoji:'⭐', color:'--d5',
     stops:[
-      {kind:'fan', name:'狎鷗亭 K-Star Road', ko:'압구정로데오 K-스타로드', query:'압구정로데오 K-Star Road', duration:'30–45分鐘（拍照）',
+      {kind:'fan', name:'狎鷗亭 K-Star Road', ko:'압구정로데오 K-스타로드', query:'압구정로데오 K-Star Road', duration:'30–45分鐘（拍照）', slot:'上午', short:'歷代天團熊公仔打卡街',
         transit:{mode:'taxi', text:'地鐵3號線轉水仁盆唐線至狎鷗亭羅德奧，約30–35分鐘；或計程車約20–25分鐘'},
         desc:'從狎鷗亭羅德奧站2號出口一出來，沿路展開的韓流名品街，矗立著象徵BTS、EXO、Super Junior、SHINee等頂級天團的巨型GangnamDol網美熊公仔。最大隻的BTS熊就在2號出口正前方，適合作為早晨散步拍照的第一站，沿路精品店外牆拍照張力十足。',
         rating:'歷代天團地標打卡點', nearby:'狎鷗亭羅德奧站2號出口即達'},
-      {kind:'meal', name:'Pro醬油蟹 新沙總店', ko:'프로간장게장 신사본점', query:'프로간장게장 신사본점', duration:'60–90分鐘（午餐）',
+      {kind:'meal', name:'Pro醬油蟹 新沙總店', ko:'프로간장게장 신사본점', query:'프로간장게장 신사본점', duration:'60–90分鐘（午餐）', slot:'午餐', short:'新沙元祖醬油蟹，白飯小偷',
         transit:{mode:'subway', text:'狎鷗亭羅德奧站搭水仁盆唐線1站到江南區廳站轉7號線，3站到新沙站4號出口步行3分鐘'},
         desc:'新沙洞最富盛名的元祖級醬油螃蟹，紅到連日本、台灣明星到首爾都指名必吃。蟹膏濃郁毫無腥味，入口即化，被譽為「白飯小偷」；建議兩人點一份大份醬油蟹再加點蟹膏拌飯（게알비빔밥），把蟹殼裡的蟹膏刮下拌著海苔白飯吃，屬高價位奢華料理。',
         rating:'diningcode★3.4，新沙醬油蟹代表', nearby:'新沙站4號出口步行3分鐘'},
-      {kind:'fan', name:'COEX星空圖書館＆Ktown4u', ko:'별마당도서관 · Ktown4u', query:'별마당도서관 코엑스', duration:'60–90分鐘（拍照＋購物）',
+      {kind:'fan', name:'COEX星空圖書館＆Ktown4u', ko:'별마당도서관 · Ktown4u', query:'별마당도서관 코엑스', duration:'60–90分鐘（拍照＋購物）', slot:'下午', short:'13公尺書牆＋Ktown4u補貨',
         transit:{mode:'subway', text:'新沙站搭3號線1站轉新盆唐線，到江南站轉2號線，直達三成站5/6號出口'},
         desc:'COEX Mall中央的開放式圖書館，13公尺高書牆是必拍地標；同商圈的Ktown4u（四大）旗艦店是追星迷妹買專輯、手燈與周邊的天堂，店內常舉辦偶像快閃活動與簽售會，也有多台限定偶像人生四格拍貼機。想買到附「通路特典小卡」的最新回歸專輯，這裡現場補貨最齊全。',
         rating:'COEX人氣打卡地標＋追星補貨聖地', nearby:'地鐵2號線三成站5/6號出口步行4分鐘，直通COEX Mall'},
-      {kind:'fan', name:'HYBE總部大樓', ko:'하이브 사옥', query:'HYBE 용산', duration:'20–30分鐘（拍照＋巷弄探訪）', website:'https://hybecorp.com',
+      {kind:'fan', name:'HYBE總部大樓', ko:'하이브 사옥', query:'HYBE 용산', duration:'20–30分鐘（拍照＋巷弄探訪）', slot:'傍晚', short:'四大天團總部，後巷應援咖啡廳', website:'https://hybecorp.com',
         transit:{mode:'taxi', text:'三成站→HYBE跨行政區轉乘複雜，建議直接叫車走永東大路沿漢江邊直達，車程約20分鐘'},
         desc:'目前全球市值最高的K-POP帝國大樓（BTS、SEVENTEEN、NewJeans、LE SSERAFIM、ILLIT大本營），大樓內部不對外開放，正門口是粉絲合照必經聖地。大樓後方的後巷咖啡廳（如Cafe Black Drum等）長年被阿米（ARMY）與克拉（CARAT）包場，貼滿密密麻麻的應援海報與照片，後方外牆也常有粉絲集資慶生壁畫，必拍。',
         rating:'四大天團粉絲朝聖地', nearby:'용산역1號出口步行約11分鐘，後巷應援咖啡廳藏在後方'},
-      {kind:'sight', name:'樂天世界塔 Seoul Sky', ko:'롯데월드타워 서울스카이', query:'서울스카이 롯데월드타워', duration:'90–120分鐘（含排隊＋觀景）',
+      {kind:'sight', name:'樂天世界塔 Seoul Sky', ko:'롯데월드타워 서울스카이', query:'서울스카이 롯데월드타워', duration:'90–120分鐘（含排隊＋觀景）', slot:'夜晚', short:'韓國第一高樓，日落夜景',
         transit:{mode:'taxi', text:'HYBE→新龍山站搭4號線轉7號線轉2號線至蠶室站約40分鐘；或計程車走奧林匹克大路約25分鐘最舒適'},
         desc:'韓國第一高樓（555公尺），搭乘全韓最快的兩層電梯僅需1分鐘直達天際。建議在日落前30分鐘抵達展望台，同時捕捉「金黃色漢江夕陽」與「點燈後的璀璨首爾夜景」，站在透明玻璃地板上俯瞰整個首爾市區，為整趟旅程畫下句點。',
         rating:'韓國第一高樓地標', nearby:'蠶室站1、2號出口直通世界塔'}
@@ -713,9 +718,9 @@ const days = [
       rating:'米其林指南推薦', nearby:'清潭洞分店，鄰近狎鷗亭羅德奧商圈'}
   },
   {
-    n:6, iso:'2026-08-28', date:"8/28（五）", theme:"特產採買，準備返程", color:'--d6',
+    n:6, iso:'2026-08-28', date:"8/28（五）", theme:"特產採買，準備返程", shortTitle:'明洞：特產採買，準備返程', emoji:'✈️', color:'--d6',
     stops:[
-      {kind:'shop', name:'樂天免稅店／新世界百貨（明洞）', ko:'롯데면세점 · 신세계백화점', query:'롯데면세점 명동', duration:'90–120分鐘（採買伴手禮）',
+      {kind:'shop', name:'樂天免稅店／新世界百貨（明洞）', ko:'롯데면세점 · 신세계백화점', query:'롯데면세점 명동', duration:'90–120分鐘（採買伴手禮）', slot:'上午', short:'伴手禮採買，人蔘海苔化妝品',
         transit:{mode:'walk', text:'步行約10–15分鐘，或計程車5分鐘'},
         desc:'人蔘、海苔、傳統點心、化妝品伴手禮採買地。若時間充裕可加碼弘大／聖水周邊偶像週邊店補貨（KWANGYA@SM、KAKAO FRIENDS等）。',
         rating:'明洞旗艦購物地標', nearby:'位於樂天百貨本店內，距地鐵僅1分鐘'}
@@ -1064,6 +1069,54 @@ document.getElementById('fabSearch').addEventListener('click', ()=>{
   window.scrollTo({top:0, behavior:'smooth'});
   setTimeout(()=>searchInput.focus(), 400);
 });
+
+/* =========================================================================
+   下載簡化 TXT：每個景點濃縮成「時段：名稱 → 一句話重點」，方便存到手機
+   隨手查閱，不需要開網頁。slot／short 沒填的景點會自動退回合理預設值。
+   ========================================================================= */
+function fallbackSlot(day, i){
+  const s = day.stops[i];
+  if(s.kind==='meal'){
+    if(i===0) return '早餐';
+    if(i>=day.stops.length-2) return '晚餐';
+    return '午餐';
+  }
+  const ratio = i/(day.stops.length-1||1);
+  if(ratio<0.25) return '上午';
+  if(ratio<0.5) return '下午';
+  if(ratio<0.75) return '傍晚';
+  return '夜晚';
+}
+function buildTxt(){
+  const lines = ['首爾六日：追星與美食路線　8/23–8/28', '='.repeat(30), ''];
+  days.forEach(day=>{
+    lines.push(`${day.emoji||'📍'} Day ${day.n}　${day.shortTitle||day.theme}`);
+    day.stops.forEach((s,i)=>{
+      const slot = s.slot || fallbackSlot(day, i);
+      const short = s.short || (s.desc||'').slice(0,20)+'…';
+      lines.push(`• ${slot}：${s.name} → ${short}`);
+      lines.push(`  📍 ${mapLink(s.query)}`);
+    });
+    if(day.backupMeal){
+      lines.push(`• 備選餐廳：${day.backupMeal.name} → ${day.backupMeal.short || day.backupMeal.rating || ''}`);
+      lines.push(`  📍 ${mapLink(day.backupMeal.query)}`);
+    }
+    lines.push('');
+  });
+  lines.push('※ 詳細地圖、交通方式與備用行程請見完整網頁版');
+  return lines.join('\n');
+}
+function downloadTxt(){
+  const blob = new Blob([buildTxt()], {type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '首爾六日行程_簡化版.txt';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 
 /* =========================================================================
    頁尾統計：由現有資料即時計算真實數字，不臆測總花費／總步行距離
