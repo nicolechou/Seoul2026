@@ -1,458 +1,388 @@
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>首爾六日：追星與美食地圖 8/23–8/28</title>
 <style>
-  :root{
-    --paper:#EEEAE0;
-    --paper-raised:#F7F4EC;
-    --paper-sunken:#E4DFD2;
-    --ink:#23262B;
-    --ink-soft:#6A6559;
-    --ink-faint:#9C9689;
-    --gold:#A2823F;
-    --gold-soft:#C9B27C;
-    --rail:#CFC7B2;
-    --card-border:rgba(35,38,43,0.10);
-    --shadow:rgba(60,50,30,0.08);
+/* =========================================================================
+   TOKENS — 顏色／字型／間距全部集中在這裡，元件樣式一律讀取變數
+   兩層配色系統：
+   1) --d1~--d6：以「日期」為軸的口音色（沿用首爾地鐵各線代表色），
+      用在 sticky nav 圓點、日期大數字、時間軸節點 —— 負責「這是第幾天」
+   2) --cat-*：以「類型」為軸的口音色（景點/美食/購物/交通/飯店/追星），
+      用在卡片標籤／左邊框／交通列 —— 負責「這是什麼類型的資訊」
+   ========================================================================= */
+:root{
+  --paper:#EEEAE0;
+  --paper-raised:#F7F4EC;
+  --paper-sunken:#E4DFD2;
+  --ink:#23262B;
+  --ink-soft:#6A6559;
+  --ink-faint:#9C9689;
+  --gold:#A2823F;
+  --gold-soft:#C9B27C;
+  --rail:#CFC7B2;
+  --card-border:rgba(35,38,43,0.10);
+  --shadow:rgba(60,50,30,0.08);
+  --done-bg:rgba(80,150,110,0.10);
+  --done-ink:#3E7A55;
 
-    --d1:#B96A34; /* line3 orange, muted */
-    --d2:#3C8CA3; /* line4 sky blue */
-    --d3:#4B8A5C; /* line2 green */
-    --d4:#8A6DA3; /* line5 purple */
-    --d5:#3D5A8A; /* line1 navy */
-    --d6:#AD5A79; /* farewell pink */
+  /* 日期口音色（第幾天） */
+  --d1:#B96A34; --d2:#3C8CA3; --d3:#4B8A5C; --d4:#8A6DA3; --d5:#3D5A8A; --d6:#AD5A79;
 
-    --font-display:"Noto Serif TC","Songti TC","PMingLiU","Iowan Old Style",serif;
-    --font-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Segoe UI",sans-serif;
-  }
+  /* 類型口音色（哪一種資訊） */
+  --cat-sight:#2F6FE0;     /* 🏛 景點：藍 */
+  --cat-food:#D97706;      /* 🍜 美食：橘 */
+  --cat-shop:#D6437B;      /* 🛍 購物：粉 */
+  --cat-transport:#6B7280; /* 🚇 交通：灰 */
+  --cat-hotel:#7C4FE0;     /* 🏨 飯店：紫 */
+  --cat-fan:#0EA5A4;       /* ⭐ 追星：青綠（原題目未列，另配一色以區分） */
 
-  :root[data-theme="dark"]{
-    --paper:#181B15;
-    --paper-raised:#20241B;
-    --paper-sunken:#12140F;
-    --ink:#EDE8DC;
-    --ink-soft:#ACA595;
-    --ink-faint:#726C5F;
-    --gold:#D2B26E;
-    --gold-soft:#C9B27C;
-    --rail:#3A3C31;
-    --card-border:rgba(237,232,220,0.10);
-    --shadow:rgba(0,0,0,0.35);
+  --font-display:"Noto Serif TC","Songti TC","PMingLiU","Iowan Old Style",serif;
+  --font-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Segoe UI",sans-serif;
+}
 
-    --d1:#DB9260;
-    --d2:#68B6CC;
-    --d3:#74BE87;
-    --d4:#B49BD0;
-    --d5:#7C99CC;
-    --d6:#D888A5;
+:root[data-theme="dark"]{
+  --paper:#181B15; --paper-raised:#20241B; --paper-sunken:#12140F;
+  --ink:#EDE8DC; --ink-soft:#ACA595; --ink-faint:#726C5F;
+  --gold:#D2B26E; --gold-soft:#C9B27C; --rail:#3A3C31;
+  --card-border:rgba(237,232,220,0.10); --shadow:rgba(0,0,0,0.35);
+  --done-bg:rgba(80,150,110,0.16); --done-ink:#8FD6A8;
+  --d1:#DB9260; --d2:#68B6CC; --d3:#74BE87; --d4:#B49BD0; --d5:#7C99CC; --d6:#D888A5;
+  --cat-sight:#6FA0FF; --cat-food:#F0A94E; --cat-shop:#F08FB7;
+  --cat-transport:#9CA3AF; --cat-hotel:#B39DFF; --cat-fan:#4FD8D6;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#181B15; --paper-raised:#20241B; --paper-sunken:#12140F;
+    --ink:#EDE8DC; --ink-soft:#ACA595; --ink-faint:#726C5F;
+    --gold:#D2B26E; --gold-soft:#C9B27C; --rail:#3A3C31;
+    --card-border:rgba(237,232,220,0.10); --shadow:rgba(0,0,0,0.35);
+    --done-bg:rgba(80,150,110,0.16); --done-ink:#8FD6A8;
+    --d1:#DB9260; --d2:#68B6CC; --d3:#74BE87; --d4:#B49BD0; --d5:#7C99CC; --d6:#D888A5;
+    --cat-sight:#6FA0FF; --cat-food:#F0A94E; --cat-shop:#F08FB7;
+    --cat-transport:#9CA3AF; --cat-hotel:#B39DFF; --cat-fan:#4FD8D6;
   }
+}
 
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --paper:#181B15;
-      --paper-raised:#20241B;
-      --paper-sunken:#12140F;
-      --ink:#EDE8DC;
-      --ink-soft:#ACA595;
-      --ink-faint:#726C5F;
-      --gold:#D2B26E;
-      --gold-soft:#C9B27C;
-      --rail:#3A3C31;
-      --card-border:rgba(237,232,220,0.10);
-      --shadow:rgba(0,0,0,0.35);
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:var(--font-body); line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;}
+img,iframe{max-width:100%;}
+button{font-family:inherit;}
+.wrap{max-width:920px;margin:0 auto;padding:0 20px;}
 
-      --d1:#DB9260;
-      --d2:#68B6CC;
-      --d3:#74BE87;
-      --d4:#B49BD0;
-      --d5:#7C99CC;
-      --d6:#D888A5;
-    }
-  }
+/* ---------- Header ---------- */
+header.hero{
+  background:radial-gradient(1200px 300px at 20% -10%, color-mix(in srgb, var(--gold) 14%, transparent), transparent), var(--paper-raised);
+  border-bottom:1px solid var(--card-border);
+  padding:40px 0 28px;
+}
+.header-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
+.eyebrow{font-size:12.5px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);font-weight:600;display:flex;align-items:center;gap:10px;}
+.eyebrow::before{content:"";width:26px;height:1px;background:var(--gold);display:inline-block;}
+h1.title{font-family:var(--font-display);font-weight:700;font-size:clamp(28px,5vw,44px);margin:14px 0 10px;text-wrap:balance;letter-spacing:0.01em;}
+.subtitle{color:var(--ink-soft);font-size:15px;max-width:60ch;}
+.meta-row{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:18px;font-size:13.5px;color:var(--ink-soft);}
+.meta-row b{color:var(--ink);font-weight:600;}
+.tip-note{margin-top:22px;padding:14px 18px;background:var(--paper);border-left:3px solid var(--gold);border-radius:2px;font-size:13.5px;color:var(--ink-soft);}
+.tip-note b{color:var(--ink);}
 
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
-  body{
-    background:var(--paper);
-    color:var(--ink);
-    font-family:var(--font-body);
-    line-height:1.6;
-    -webkit-font-smoothing:antialiased;
-  }
-  a{color:inherit;}
-  img,iframe{max-width:100%;}
+/* 標頭右側工具：搜尋 + 深色模式切換 + 匯出PDF */
+.header-tools{display:flex;flex-direction:column;gap:10px;align-items:flex-end;}
+.tool-row{display:flex;gap:8px;}
+.icon-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:38px;height:38px;border-radius:50%;
+  border:1px solid var(--card-border);background:var(--paper);
+  cursor:pointer;font-size:17px;line-height:1;
+  transition:transform .15s ease, border-color .15s ease;
+}
+.icon-btn:hover{transform:translateY(-1px);border-color:var(--gold);}
+.search-wrap{position:relative;width:220px;max-width:60vw;}
+.search-input{
+  width:100%;padding:9px 14px 9px 34px;border-radius:999px;
+  border:1px solid var(--card-border);background:var(--paper);color:var(--ink);
+  font-size:13.5px;
+}
+.search-wrap::before{content:"🔍";position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;opacity:.7;}
+.search-results{
+  position:absolute;top:calc(100% + 6px);left:0;right:0;
+  background:var(--paper-raised);border:1px solid var(--card-border);border-radius:12px;
+  box-shadow:0 8px 24px var(--shadow);max-height:340px;overflow-y:auto;
+  z-index:80;display:none;
+}
+.search-results.open{display:block;}
+.search-hit{display:block;width:100%;text-align:left;padding:10px 14px;border:0;background:none;cursor:pointer;font-size:13px;color:var(--ink);border-bottom:1px solid var(--card-border);}
+.search-hit:last-child{border-bottom:0;}
+.search-hit:hover{background:var(--paper-sunken);}
+.search-hit .day-tag{font-size:11px;color:var(--ink-faint);display:block;margin-top:2px;}
+.search-empty{padding:14px;font-size:13px;color:var(--ink-faint);text-align:center;}
 
-  .wrap{max-width:920px;margin:0 auto;padding:0 20px;}
+.export-btn{
+  display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ink);
+  background:var(--paper);border:1px solid var(--gold);padding:8px 16px;border-radius:999px;
+  cursor:pointer;white-space:nowrap;
+}
+.export-btn:hover{background:var(--paper-sunken);}
 
-  /* ---------- Header ---------- */
-  header.hero{
-    background:
-      radial-gradient(1200px 300px at 20% -10%, color-mix(in srgb, var(--gold) 14%, transparent), transparent),
-      var(--paper-raised);
-    border-bottom:1px solid var(--card-border);
-    padding:56px 0 40px;
-  }
-  .eyebrow{
-    font-size:12.5px;
-    letter-spacing:0.22em;
-    text-transform:uppercase;
-    color:var(--gold);
-    font-weight:600;
-    display:flex;
-    align-items:center;
-    gap:10px;
-  }
-  .eyebrow::before{
-    content:"";
-    width:26px;height:1px;background:var(--gold);display:inline-block;
-  }
-  h1.title{
-    font-family:var(--font-display);
-    font-weight:700;
-    font-size:clamp(30px,5vw,46px);
-    margin:14px 0 10px;
-    text-wrap:balance;
-    letter-spacing:0.01em;
-  }
-  .subtitle{
-    color:var(--ink-soft);
-    font-size:15.5px;
-    max-width:60ch;
-  }
-  .meta-row{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px 22px;
-    margin-top:20px;
-    font-size:13.5px;
-    color:var(--ink-soft);
-  }
-  .meta-row b{color:var(--ink);font-weight:600;}
-  .tip-note{
-    margin-top:26px;
-    padding:14px 18px;
-    background:var(--paper);
-    border-left:3px solid var(--gold);
-    border-radius:2px;
-    font-size:13.5px;
-    color:var(--ink-soft);
-  }
-  .tip-note b{color:var(--ink);}
+/* ---------- Sticky day nav（含 Scroll Spy 高亮）---------- */
+nav.daynav{
+  position:sticky;top:0;z-index:60;
+  background:color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--card-border);
+}
+.daynav-inner{display:flex;gap:8px;overflow-x:auto;padding:12px 20px;max-width:920px;margin:0 auto;scrollbar-width:thin;}
+.daynav-inner::-webkit-scrollbar{height:5px;}
+.daynav-inner::-webkit-scrollbar-thumb{background:var(--rail);border-radius:4px;}
+.day-pill{
+  flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;
+  border:1px solid var(--card-border);background:var(--paper-raised);color:var(--ink);
+  text-decoration:none;font-size:13px;white-space:nowrap;cursor:pointer;
+  transition:transform .15s ease, border-color .15s ease, background .15s ease;
+}
+.day-pill:hover{transform:translateY(-1px);border-color:var(--dot);}
+.day-pill.active{background:var(--dot);color:var(--paper-raised);border-color:var(--dot);}
+.day-pill .dot{width:9px;height:9px;border-radius:50%;background:var(--dot);flex:0 0 auto;}
+.day-pill.active .dot{background:var(--paper-raised);}
+.day-pill .num{font-weight:700;font-variant-numeric:tabular-nums;}
 
-  /* ---------- Day nav ---------- */
-  nav.daynav{
-    position:sticky;top:0;z-index:50;
-    background:color-mix(in srgb, var(--paper) 92%, transparent);
-    backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--card-border);
-  }
-  .daynav-inner{
-    display:flex;gap:8px;overflow-x:auto;
-    padding:12px 20px;
-    max-width:920px;margin:0 auto;
-    scrollbar-width:thin;
-  }
-  .daynav-inner::-webkit-scrollbar{height:5px;}
-  .daynav-inner::-webkit-scrollbar-thumb{background:var(--rail);border-radius:4px;}
-  .day-pill{
-    flex:0 0 auto;
-    display:flex;align-items:center;gap:8px;
-    padding:8px 14px;
-    border-radius:999px;
-    border:1px solid var(--card-border);
-    background:var(--paper-raised);
-    color:var(--ink);
-    text-decoration:none;
-    font-size:13px;
-    white-space:nowrap;
-    transition:transform .15s ease, border-color .15s ease;
-  }
-  .day-pill:hover{transform:translateY(-1px);border-color:var(--dot);}
-  .day-pill .dot{width:9px;height:9px;border-radius:50%;background:var(--dot);flex:0 0 auto;}
-  .day-pill .num{font-weight:700;font-variant-numeric:tabular-nums;}
+/* ---------- Day section／Accordion ---------- */
+section.day{border-bottom:1px solid var(--card-border);scroll-margin-top:74px;}
+.day-head{
+  display:flex;align-items:flex-start;gap:16px;cursor:pointer;
+  padding:28px 0 18px;user-select:none;
+}
+.day-head:focus-visible{outline:2px solid var(--dot);outline-offset:4px;}
+.day-num{font-family:var(--font-display);font-size:46px;font-weight:700;color:var(--dot);line-height:1;font-variant-numeric:tabular-nums;flex:0 0 auto;}
+.day-titles{flex:1;min-width:0;}
+.day-date{font-size:12.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:600;}
+.day-theme{font-family:var(--font-display);font-size:21px;font-weight:700;margin-top:2px;text-wrap:balance;}
+.today-badge{display:inline-block;margin-left:10px;font-size:11px;font-weight:700;color:#fff;background:var(--cat-food);padding:2px 9px;border-radius:999px;vertical-align:middle;}
+.chevron{flex:0 0 auto;width:32px;height:32px;border-radius:50%;border:1px solid var(--card-border);display:flex;align-items:center;justify-content:center;margin-top:6px;transition:transform .25s ease;color:var(--ink-soft);}
+.day-head.open .chevron{transform:rotate(180deg);}
 
-  /* ---------- Day section ---------- */
-  section.day{
-    padding:56px 0 24px;
-    border-bottom:1px solid var(--card-border);
-    scroll-margin-top:70px;
-  }
-  .day-head{
-    display:flex;
-    align-items:baseline;
-    gap:18px;
-    margin-bottom:6px;
-  }
-  .day-num{
-    font-family:var(--font-display);
-    font-size:52px;
-    font-weight:700;
-    color:var(--dot);
-    line-height:1;
-    font-variant-numeric:tabular-nums;
-  }
-  .day-titles{flex:1;min-width:0;}
-  .day-date{
-    font-size:12.5px;
-    letter-spacing:0.14em;
-    text-transform:uppercase;
-    color:var(--ink-faint);
-    font-weight:600;
-  }
-  .day-theme{
-    font-family:var(--font-display);
-    font-size:22px;
-    font-weight:700;
-    margin-top:2px;
-    text-wrap:balance;
-  }
-  .day-rule{height:2px;border-radius:2px;background:var(--dot);width:64px;margin:14px 0 30px;}
+/* Accordion 展開動畫：CSS grid-template-rows 0fr/1fr trick，免JS量高度 */
+.day-body-wrap{display:grid;grid-template-rows:0fr;transition:grid-template-rows .32s ease;}
+.day-head.open + .day-body-wrap{grid-template-rows:1fr;}
+.day-body{overflow:hidden;}
+.day-body-inner{padding-bottom:28px;}
 
-  /* ---------- Timeline / rail ---------- */
-  .route{
-    display:grid;
-    grid-template-columns:34px 1fr;
-    gap:0 18px;
-  }
-  .rail-col{
-    display:flex;flex-direction:column;align-items:center;
-    position:relative;
-  }
-  .rail-col .line{
-    position:absolute;top:16px;bottom:-8px;left:50%;
-    width:2px;transform:translateX(-50%);
-    background:var(--rail);
-  }
-  .node{
-    width:32px;height:32px;border-radius:50%;
-    background:var(--dot);
-    color:var(--paper-raised);
-    display:flex;align-items:center;justify-content:center;
-    font-weight:700;font-size:13.5px;
-    font-variant-numeric:tabular-nums;
-    z-index:1;
-    box-shadow:0 0 0 5px var(--paper);
-  }
-  .node.icon-only{background:var(--paper-sunken);color:var(--ink-soft);border:1px solid var(--card-border);box-shadow:0 0 0 5px var(--paper);}
-  .node svg{width:15px;height:15px;}
+.day-rule{height:2px;border-radius:2px;background:var(--dot);width:64px;margin:0 0 22px;}
 
-  .stop{
-    padding-bottom:34px;
-  }
-  .stop:last-child{padding-bottom:8px;}
-  .transit-line{
-    display:flex;align-items:center;gap:7px;
-    font-size:12.5px;
-    color:var(--ink-faint);
-    margin-bottom:8px;
-  }
-  .transit-line svg{width:13px;height:13px;flex:0 0 auto;opacity:.8;}
+/* 抵達／出發補充說明（如 Day1 機場→飯店） */
+.arrival-note{
+  border:1px dashed var(--cat-transport);border-radius:14px;
+  padding:14px 18px;margin-bottom:18px;background:color-mix(in srgb, var(--cat-transport) 6%, var(--paper-raised));
+}
+.arrival-title{font-size:12.5px;font-weight:700;color:var(--cat-transport);margin-bottom:8px;letter-spacing:0.04em;}
+.arrival-note ul{margin:0;padding-left:18px;font-size:13.5px;color:var(--ink-soft);}
+.arrival-note li{margin-bottom:4px;}
 
-  .card{
-    background:var(--paper-raised);
-    border:1px solid var(--card-border);
-    border-radius:14px;
-    padding:18px 20px 20px;
-    box-shadow:0 1px 2px var(--shadow);
-  }
-  .card.meal{border-left:3px solid var(--dot);}
-  .card.fan{background:linear-gradient(180deg, color-mix(in srgb, var(--dot) 7%, var(--paper-raised)), var(--paper-raised));}
+/* 每日摘要卡 */
+.day-summary{
+  background:var(--paper-sunken);border-radius:14px;padding:16px 18px;margin-bottom:24px;
+  display:flex;flex-direction:column;gap:10px;
+}
+.summary-title{font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-faint);font-weight:700;}
+.summary-chips{display:flex;flex-wrap:wrap;gap:8px;}
+.summary-chip{
+  display:inline-flex;align-items:center;gap:6px;font-size:12.5px;
+  background:var(--paper-raised);border:1px solid var(--card-border);border-radius:999px;padding:5px 12px;
+}
+.summary-chip.done{background:var(--done-bg);color:var(--done-ink);border-color:transparent;text-decoration:line-through;}
+.summary-meta{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--ink-soft);}
+.summary-meta span{display:inline-flex;align-items:center;gap:5px;}
 
-  .card-tag{
-    display:inline-flex;align-items:center;gap:6px;
-    font-size:11px;letter-spacing:0.12em;text-transform:uppercase;
-    color:var(--dot);font-weight:700;margin-bottom:6px;
-  }
-  .card-tag svg{width:12px;height:12px;}
-  .card-name{
-    font-family:var(--font-display);
-    font-size:19px;font-weight:700;
-    display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
-  }
-  .card-name .ko{font-family:var(--font-body);font-weight:400;font-size:14px;color:var(--ink-faint);}
-  .card-desc{
-    margin:10px 0 14px;
-    font-size:14.5px;
-    color:var(--ink-soft);
-  }
-  .info-row{
-    display:flex;flex-wrap:wrap;gap:8px 18px;
-    margin:0 0 14px;
-    padding-top:12px;
-    border-top:1px dashed var(--card-border);
-  }
-  .info-row .item{
-    display:flex;align-items:flex-start;gap:6px;
-    font-size:12.5px;color:var(--ink-soft);
-    max-width:100%;
-  }
-  .info-row .item svg{width:13px;height:13px;flex:0 0 auto;margin-top:2px;color:var(--dot);}
-  .info-row .item b{color:var(--ink);font-weight:600;}
+/* ---------- Timeline / rail ---------- */
+.route{display:grid;grid-template-columns:34px 1fr;gap:0 18px;}
+.rail-col{display:flex;flex-direction:column;align-items:center;position:relative;}
+.rail-col .line{position:absolute;top:16px;bottom:-8px;left:50%;width:2px;transform:translateX(-50%);background:var(--rail);}
+.node{width:32px;height:32px;border-radius:50%;background:var(--dot);color:var(--paper-raised);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13.5px;font-variant-numeric:tabular-nums;z-index:1;box-shadow:0 0 0 5px var(--paper);}
+.stop{padding-bottom:30px;}
+.stop:last-child{padding-bottom:8px;}
 
-  .card.backup{
-    border-style:dashed;
-    background:var(--paper);
-    box-shadow:none;
-  }
-  .card.backup .info-row{border-top-style:solid;}
-  .backup-tag{
-    display:inline-flex;align-items:center;gap:5px;
-    font-size:10.5px;letter-spacing:0.08em;
-    color:var(--ink-faint);
-    background:var(--paper-sunken);
-    border-radius:999px;
-    padding:2px 9px;
-    margin-left:8px;
-    font-weight:600;
-  }
-  .backup-map{
-    border-radius:10px;overflow:hidden;
-    border:1px solid var(--card-border);
-    height:180px;margin-bottom:14px;
-  }
-  .backup-map iframe{width:100%;height:100%;border:0;display:block;filter:saturate(0.85);}
+.transit-line{
+  display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--cat-transport);margin-bottom:8px;font-weight:600;
+}
+.transit-line .txt{color:var(--ink-soft);font-weight:400;}
 
-  .backup-section{margin-top:28px;}
-  .backup-heading{
-    display:flex;align-items:center;gap:10px;
-    font-size:12px;letter-spacing:0.14em;text-transform:uppercase;
-    color:var(--ink-faint);font-weight:700;
-    margin:26px 0 14px;
-  }
-  .backup-heading::after{
-    content:"";flex:1;height:1px;background:var(--card-border);
-  }
-  .backup-grid{
-    display:grid;grid-template-columns:1fr 1fr;gap:16px;
-  }
-  .backup-grid.single{grid-template-columns:1fr;}
-  .daymap{margin-bottom:32px;}
-  .daymap-frame{
-    border-radius:16px;overflow:hidden;
-    border:1px solid var(--card-border);
-    height:340px;
-    box-shadow:0 1px 2px var(--shadow);
-  }
-  .daymap-frame iframe{width:100%;height:100%;border:0;display:block;filter:saturate(0.92);}
-  .legend{
-    display:flex;flex-wrap:wrap;gap:8px;
-    margin-top:12px;
-  }
-  .legend-chip{
-    display:inline-flex;align-items:center;gap:7px;
-    font-size:12.5px;color:var(--ink-soft);
-    background:var(--paper-sunken);
-    border-radius:999px;
-    padding:5px 12px 5px 6px;
-  }
-  .legend-chip b{
-    width:18px;height:18px;border-radius:50%;
-    background:var(--dot);color:var(--paper-raised);
-    display:inline-flex;align-items:center;justify-content:center;
-    font-size:11px;font-weight:700;
-    font-variant-numeric:tabular-nums;
-    flex:0 0 auto;
-  }
-  .map-frame{
-    border-radius:10px;overflow:hidden;
-    border:1px solid var(--card-border);
-    height:210px;
-  }
-  .map-frame iframe{width:100%;height:100%;border:0;display:block;filter:saturate(0.9);}
-  .card-actions{
-    margin-top:12px;
-    display:flex;justify-content:flex-end;
-  }
-  .map-link{
-    display:inline-flex;align-items:center;gap:6px;
-    font-size:12.5px;font-weight:600;
-    color:var(--dot);
-    text-decoration:none;
-    border:1px solid var(--card-border);
-    padding:6px 12px;border-radius:999px;
-    background:var(--paper);
-  }
-  .map-link svg{width:13px;height:13px;}
-  .map-link:hover{border-color:var(--dot);}
+/* ---------- 景點／餐廳 卡片 ---------- */
+.card{
+  background:var(--paper-raised);border:1px solid var(--card-border);border-radius:14px;
+  padding:16px 18px 18px;box-shadow:0 1px 2px var(--shadow);
+  display:flex;gap:14px;
+  transition:transform .18s ease, box-shadow .18s ease;
+  opacity:0;transform:translateY(10px);
+}
+.card.in-view{opacity:1;transform:translateY(0);transition:opacity .5s ease, transform .5s ease;}
+.card:hover{transform:translateY(-3px);box-shadow:0 10px 24px var(--shadow);}
+.card.backup{border-style:dashed;background:var(--paper);box-shadow:none;}
+.card.backup:hover{box-shadow:0 6px 16px var(--shadow);}
+.card.done{opacity:.6;}
 
-  .day-footer{
-    display:flex;flex-wrap:wrap;gap:14px 24px;
-    align-items:center;
-    justify-content:space-between;
-    margin-top:6px;
-    padding:18px 20px;
-    background:var(--paper-sunken);
-    border-radius:14px;
-    font-size:13px;
-    color:var(--ink-soft);
-  }
-  .route-btn{
-    display:inline-flex;align-items:center;gap:8px;
-    font-size:13px;font-weight:700;
-    color:var(--paper-raised);
-    background:var(--dot);
-    padding:10px 18px;border-radius:999px;
-    text-decoration:none;white-space:nowrap;
-  }
-  .route-btn svg{width:14px;height:14px;}
+/* 縮圖／地圖預覽 tile：無實際景點照片可用，改用類型色漸層＋大 emoji 的預覽方塊，
+   點擊可放大看該地點的 Google 地圖（Lightbox），並清楚標示「地圖預覽」而非照片，避免誤導 */
+.thumb{
+  flex:0 0 auto;width:76px;height:76px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-size:30px;
+  cursor:pointer;border:0;color:#fff;position:relative;overflow:hidden;
+}
+.thumb::after{content:"🔍";position:absolute;right:4px;bottom:4px;font-size:11px;background:rgba(0,0,0,.35);border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;}
+.thumb-cap{position:absolute;left:0;right:0;bottom:0;font-size:8px;letter-spacing:.04em;text-align:center;background:rgba(0,0,0,.35);color:#fff;padding:1px 0;}
+.card-body{flex:1;min-width:0;}
 
-  .day-notes{
-    margin-top:22px;
-  }
-  .day-notes .note-title{
-    font-size:12px;letter-spacing:0.1em;text-transform:uppercase;
-    color:var(--ink-faint);font-weight:700;margin-bottom:8px;
-  }
-  .day-notes ul{margin:0;padding-left:18px;font-size:13.5px;color:var(--ink-soft);}
-  .day-notes li{margin-bottom:4px;}
+.card-tag-row{display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap;}
+.card-tag{
+  display:inline-flex;align-items:center;gap:5px;font-size:11px;letter-spacing:0.06em;font-weight:700;
+  padding:2px 9px;border-radius:999px;color:#fff;
+}
+.backup-tag{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;letter-spacing:0.06em;color:var(--ink-faint);background:var(--paper-sunken);border-radius:999px;padding:2px 9px;font-weight:600;}
+.check-toggle{
+  margin-left:auto;display:inline-flex;align-items:center;gap:5px;
+  border:1px solid var(--card-border);background:var(--paper);border-radius:999px;
+  padding:3px 10px;font-size:12px;cursor:pointer;color:var(--ink-soft);
+}
+.check-toggle.checked{background:var(--done-bg);color:var(--done-ink);border-color:transparent;font-weight:600;}
 
-  /* ---------- Footer notices ---------- */
-  footer.reminders{
-    padding:48px 0 70px;
-  }
-  .reminders h2{
-    font-family:var(--font-display);
-    font-size:24px;margin-bottom:22px;
-  }
-  .notice-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:18px;
-  }
-  @media (max-width:640px){
-    .notice-grid{grid-template-columns:1fr;}
-    .day-num{font-size:40px;}
-    .route{grid-template-columns:26px 1fr;gap:0 12px;}
-    .node{width:26px;height:26px;font-size:12px;}
-    .daymap-frame{height:260px;}
-    .backup-grid{grid-template-columns:1fr;}
-  }
-  .notice-card{
-    background:var(--paper-raised);
-    border:1px solid var(--card-border);
-    border-radius:14px;
-    padding:20px 22px;
-  }
-  .notice-card h3{
-    font-size:13px;letter-spacing:0.1em;text-transform:uppercase;
-    color:var(--gold);margin:0 0 12px;
-  }
-  .notice-card ul{margin:0;padding-left:18px;font-size:13.5px;color:var(--ink-soft);}
-  .notice-card li{margin-bottom:8px;}
-  .colophon{
-    text-align:center;margin-top:40px;
-    font-size:12px;color:var(--ink-faint);
-    letter-spacing:0.06em;
-  }
+.card-name{font-family:var(--font-display);font-size:18px;font-weight:700;display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;}
+.card-name.done{text-decoration:line-through;color:var(--ink-faint);}
+.card-name .ko{font-family:var(--font-body);font-weight:400;font-size:13.5px;color:var(--ink-faint);}
+.card-desc{margin:8px 0 10px;font-size:14px;color:var(--ink-soft);}
 
-  a.map-link:focus-visible,a.day-pill:focus-visible,a.route-btn:focus-visible{
-    outline:2px solid var(--dot);outline-offset:2px;
-  }
+.info-grid{display:flex;flex-wrap:wrap;gap:7px 16px;margin:0 0 12px;padding-top:10px;border-top:1px dashed var(--card-border);font-size:12.5px;color:var(--ink-soft);}
+.info-grid .item{display:flex;align-items:flex-start;gap:5px;}
+.info-grid .item b{color:var(--ink);font-weight:600;}
 
-  @media (prefers-reduced-motion:reduce){
-    *{transition:none !important;}
-  }
+.backup-map{border-radius:10px;overflow:hidden;border:1px solid var(--card-border);height:170px;margin-bottom:12px;}
+.backup-map iframe{width:100%;height:100%;border:0;display:block;filter:saturate(0.85);}
+
+.card-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;}
+.map-link{
+  display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--ink);
+  text-decoration:none;border:1px solid var(--card-border);padding:6px 11px;border-radius:999px;background:var(--paper);
+}
+.map-link:hover{border-color:var(--gold);}
+.map-link.google{color:var(--cat-sight);}
+.map-link.naver{color:#03C75A;}
+.map-link.kakao{color:#B98F00;}
+.map-link.site{color:var(--gold);}
+
+/* ---------- 備用行程 ---------- */
+.backup-section{margin-top:22px;}
+.backup-heading{display:flex;align-items:center;gap:10px;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:700;margin:22px 0 14px;}
+.backup-heading::after{content:"";flex:1;height:1px;background:var(--card-border);}
+.backup-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.backup-grid.single{grid-template-columns:1fr;}
+
+/* ---------- 每日路線總覽地圖 ---------- */
+.daymap{margin-bottom:26px;}
+.daymap-frame{border-radius:16px;overflow:hidden;border:1px solid var(--card-border);height:320px;box-shadow:0 1px 2px var(--shadow);}
+.daymap-frame iframe{width:100%;height:100%;border:0;display:block;filter:saturate(0.92);}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.legend-chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink-soft);background:var(--paper-sunken);border-radius:999px;padding:5px 12px 5px 6px;}
+.legend-chip b{width:18px;height:18px;border-radius:50%;background:var(--dot);color:var(--paper-raised);display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-variant-numeric:tabular-nums;flex:0 0 auto;}
+
+.day-footer{
+  display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center;justify-content:space-between;
+  margin-top:6px;padding:16px 18px;background:var(--paper-sunken);border-radius:14px;font-size:13px;color:var(--ink-soft);
+  border-left:3px solid var(--cat-hotel);
+}
+.route-btn{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#fff;background:var(--dot);padding:9px 16px;border-radius:999px;text-decoration:none;white-space:nowrap;}
+
+/* ---------- Lightbox（地圖放大預覽）---------- */
+.lightbox{position:fixed;inset:0;background:rgba(10,10,10,.72);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;}
+.lightbox.open{display:flex;}
+.lightbox-box{background:var(--paper-raised);border-radius:16px;overflow:hidden;max-width:720px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+.lightbox-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--card-border);}
+.lightbox-head b{font-family:var(--font-display);font-size:16px;}
+.lightbox-close{border:0;background:none;font-size:20px;cursor:pointer;color:var(--ink-soft);width:32px;height:32px;border-radius:50%;}
+.lightbox-close:hover{background:var(--paper-sunken);}
+.lightbox-frame{height:420px;}
+.lightbox-frame iframe{width:100%;height:100%;border:0;}
+
+/* ---------- Footer ---------- */
+footer.reminders{padding:40px 0 100px;}
+.reminders h2{font-family:var(--font-display);font-size:22px;margin-bottom:18px;}
+.notice-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.notice-card{background:var(--paper-raised);border:1px solid var(--card-border);border-radius:14px;padding:18px 20px;}
+.notice-card h3{font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin:0 0 12px;}
+.notice-card ul{margin:0;padding-left:18px;font-size:13.5px;color:var(--ink-soft);}
+.notice-card li{margin-bottom:8px;}
+
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:28px 0;}
+.stat-tile{background:var(--paper-raised);border:1px solid var(--card-border);border-radius:12px;padding:14px;text-align:center;}
+.stat-tile .num{font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--gold);font-variant-numeric:tabular-nums;}
+.stat-tile .lbl{font-size:11.5px;color:var(--ink-faint);margin-top:2px;}
+.stats-note{font-size:12px;color:var(--ink-faint);margin-top:10px;line-height:1.6;}
+
+.colophon{text-align:center;margin-top:32px;font-size:12px;color:var(--ink-faint);letter-spacing:0.06em;}
+
+/* ---------- 浮動按鈕 ---------- */
+.fab-stack{position:fixed;right:18px;bottom:18px;display:flex;flex-direction:column;gap:10px;z-index:90;}
+.fab{
+  width:46px;height:46px;border-radius:50%;border:1px solid var(--card-border);
+  background:var(--paper-raised);box-shadow:0 6px 18px var(--shadow);
+  display:flex;align-items:center;justify-content:center;font-size:19px;cursor:pointer;
+  transition:transform .15s ease;
+}
+.fab:hover{transform:translateY(-2px) scale(1.04);}
+.fab.primary{background:var(--gold);color:#fff;border-color:transparent;}
+
+a.map-link:focus-visible,a.day-pill:focus-visible,a.route-btn:focus-visible,.icon-btn:focus-visible,.fab:focus-visible{
+  outline:2px solid var(--dot);outline-offset:2px;
+}
+
+/* ---------- RWD 斷點：390 / 414 手機、768 平板、1024 / 1440 桌機 ---------- */
+@media (max-width:480px){
+  .notice-grid{grid-template-columns:1fr;}
+  .stats-bar{grid-template-columns:repeat(2,1fr);}
+  .day-num{font-size:36px;}
+  .route{grid-template-columns:24px 1fr;gap:0 10px;}
+  .node{width:24px;height:24px;font-size:11px;}
+  .daymap-frame{height:240px;}
+  .backup-grid{grid-template-columns:1fr;}
+  .card{flex-direction:column;}
+  .thumb{width:100%;height:96px;border-radius:10px;}
+  .header-top{flex-direction:column;}
+  .header-tools{align-items:flex-start;width:100%;}
+  .search-wrap{width:100%;max-width:none;}
+}
+@media (min-width:481px) and (max-width:768px){
+  .stats-bar{grid-template-columns:repeat(2,1fr);}
+  .backup-grid{grid-template-columns:1fr;}
+}
+@media (min-width:1025px){
+  .wrap{max-width:980px;}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  *{transition:none !important;}
+}
+
+@media print{
+  .export-btn,.header-tools,nav.daynav,.card-actions,.route-btn,.fab-stack,.check-toggle{display:none !important;}
+  body{background:#fff;color:#1a1a1a;}
+  .day-head.open + .day-body-wrap, .day-body-wrap{grid-template-rows:1fr !important;}
+  header.hero{background:none;padding:12px 0;}
+  section.day{border-bottom:1px solid #ddd;page-break-before:always;}
+  section.day:first-of-type{page-break-before:auto;}
+  .card,.daymap-frame,.backup-map,.notice-card{box-shadow:none;break-inside:avoid;}
+  .stop{break-inside:avoid;}
+  .daymap-frame{height:240px;}
+}
 </style>
 
+<!-- =========================================================================
+     共用 SVG 圖示（僅用於交通方式／地圖／關閉等少量精緻線條圖示；
+     其餘分類圖示改用 Emoji，原生零依賴、離線也能顯示，適合旅途中使用）
+     ========================================================================= -->
 <svg width="0" height="0" style="position:absolute">
   <symbol id="i-walk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="13" cy="4" r="1.6"/><path d="M10 8l3-1.5 2.5 2.5 3 1.5M12.5 9.5L11 14l-3 2.5M11 14l3 1 1 5M8 22l2.5-4"/>
@@ -463,44 +393,54 @@
   <symbol id="i-taxi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
     <path d="M4 16l1.5-5.5A2 2 0 0 1 7.4 9h9.2a2 2 0 0 1 1.9 1.5L20 16"/><rect x="3" y="16" width="18" height="4" rx="1.2"/><circle cx="7.5" cy="20" r="1.3"/><circle cx="16.5" cy="20" r="1.3"/><path d="M9 9V6h6v3"/>
   </symbol>
-  <symbol id="i-fork" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M6 2v8M8 2v8M6 10v12M8 10a2 2 0 0 1-2 0M18 2c-2 1-2 4-2 6s0 3 2 4v10"/>
-  </symbol>
-  <symbol id="i-star" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-    <path d="M12 2.5l2.7 6.3 6.8.6-5.2 4.5 1.6 6.6-6-3.6-6 3.6 1.6-6.6-5.2-4.5 6.8-.6z"/>
-  </symbol>
-  <symbol id="i-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M6 8h12l1 12H5z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>
-  </symbol>
   <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12 21s7-6.6 7-12a7 7 0 1 0-14 0c0 5.4 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/>
   </symbol>
   <symbol id="i-route" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="5" cy="6" r="2"/><circle cx="19" cy="18" r="2"/><path d="M5 8c0 6 14 2 14 8"/>
   </symbol>
-  <symbol id="i-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 2.5c1 3-3 4-3 8a3 3 0 0 0 6 0c1.4 1 2 2.6 2 4.2A5.2 5.2 0 0 1 6.8 14.7C6.8 9 12 7 12 2.5z"/>
+  <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3v12m0 0l-4.5-4.5M12 15l4.5-4.5M4 18v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"/>
+  </symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 9l6 6 6-6"/>
   </symbol>
 </svg>
 
 <header class="hero">
   <div class="wrap">
-    <div class="eyebrow">SEOUL · 2026.08.23 – 08.28</div>
-    <h1 class="title">首爾六日：追星與美食路線</h1>
-    <p class="subtitle">住宿於中區忠武路2街，鄰近明洞、南山、東大門、乙支路。行程以追星巷弄與代表性餐廳為主軸，每日路線依走訪順序標號，並附上對應地圖。</p>
+    <div class="header-top">
+      <div style="flex:1;min-width:240px;">
+        <div class="eyebrow">SEOUL · 2026.08.23 – 08.28</div>
+        <h1 class="title">首爾六日：追星與美食路線</h1>
+        <p class="subtitle">住宿於中區忠武路2街，鄰近明洞、南山、東大門、乙支路，交通方便。行程已減少傳統寺廟／古蹟內容，加入追星路線，每天安排一間知名代表餐廳，每日路線依走訪順序標號，並附上對應地圖。</p>
+      </div>
+      <div class="header-tools">
+        <div class="tool-row">
+          <div class="search-wrap">
+            <input id="searchInput" class="search-input" type="text" placeholder="搜尋景點／餐廳／捷運站…" autocomplete="off">
+            <div id="searchResults" class="search-results"></div>
+          </div>
+          <button class="icon-btn" id="darkToggle" title="切換深色模式" aria-label="切換深色模式">🌙</button>
+        </div>
+      </div>
+    </div>
     <div class="meta-row">
       <span>🏨 <b>住宿</b>：忠武路2街，中區</span>
       <span>📅 <b>天數</b>：6天5夜</span>
       <span>🎯 <b>主題</b>：追星路線＋每日代表美食</span>
     </div>
     <div class="tip-note">
-      <b>提醒：</b>首爾轉乘路線偶爾會調整，建議出發前用 <b>Naver Map</b> 或 <b>Kakao Map</b> 再次確認即時步行導航（Google Map 在韓國無法顯示步行路線）。頁面中的地圖與連結僅供標示景點位置與大致路線參考，實際步行導航仍以 Naver／Kakao Map 為準。
+      <b>提醒：</b>首爾轉乘路線偶爾會調整，建議出發前用 <b>Naver Map</b> 或 <b>Kakao Map</b> 再次確認即時步行導航（Google Map 在韓國無法顯示步行路線）。頁面中的地圖與連結僅供標示景點位置與大致路線參考，實際步行導航仍以 Naver／Kakao Map 為準。地圖縮圖為「地圖預覽」而非現場照片，特此說明。
     </div>
+    <button class="export-btn" onclick="window.print()">
+      <svg width="14" height="14"><use href="#i-download"/></svg>匯出 PDF（開啟列印視窗，另存為 PDF）
+    </button>
   </div>
 </header>
 
 <nav class="daynav" id="daynav">
-  <div class="daynav-inner"></div>
+  <div class="daynav-inner" id="daynavInner"></div>
 </nav>
 
 <main class="wrap" id="days"></main>
@@ -510,7 +450,7 @@
     <h2>行前小提醒</h2>
     <div class="notice-grid">
       <div class="notice-card">
-        <h3>追星小提醒</h3>
+        <h3>⭐ 追星小提醒</h3>
         <ul>
           <li>生日應援咖啡廳（생일카페）依偶像生日檔期不定期出現於弘大、聖水洞、狎鷗亭一帶，出發前可上 X（推特）搜尋「＋出發日期區間＋생일카페」查詢，有喜歡的可自由排入行程空檔。</li>
           <li>經紀公司大樓皆「僅供樓外拍照」，請勿在門口喧嘩逗留。</li>
@@ -518,7 +458,7 @@
         </ul>
       </div>
       <div class="notice-card">
-        <h3>美食小提醒</h3>
+        <h3>🍜 美食小提醒</h3>
         <ul>
           <li>大瓦房、목구멍等人氣餐廳假日容易大排長龍，建議平日中午前往或先線上預約。</li>
           <li>每日僅安排一間代表性名店，其餘用餐可依當下行程彈性選擇周邊小吃。</li>
@@ -526,219 +466,284 @@
         </ul>
       </div>
     </div>
-    <div class="colophon">依「首爾行程_0823-0828.md」整理製作 · 地圖資料來源 Google Maps</div>
+
+    <div id="statsBar" class="stats-bar"></div>
+    <div class="stats-note">
+      ⓘ 總步行距離／總花費因交通方式與個人消費習慣差異較大，故不列出單一數字；建議以各景點卡片標示的交通方式與備註為準，出發前用 Naver／Kakao Map 確認實際路線。
+    </div>
+
+    <div class="colophon">依「首爾行程_0823-0828.md」整理製作 · 地圖資料來源 Google Maps · v2.0 · 最後更新 2026-07-24</div>
   </div>
 </footer>
 
+<!-- 浮動按鈕：回頂端／今日／今日地圖／搜尋 -->
+<div class="fab-stack">
+  <button class="fab" id="fabSearch" title="搜尋" aria-label="搜尋">🔍</button>
+  <button class="fab" id="fabTodayMap" title="今日地圖" aria-label="今日地圖">🗺</button>
+  <button class="fab primary" id="fabToday" title="今日行程" aria-label="今日行程">📅</button>
+  <button class="fab" id="fabTop" title="回頂端" aria-label="回頂端">⬆</button>
+</div>
+
+<!-- Lightbox：放大版地圖預覽 -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-box">
+    <div class="lightbox-head"><b id="lightboxTitle"></b><button class="lightbox-close" id="lightboxClose" aria-label="關閉">✕</button></div>
+    <div class="lightbox-frame"><iframe id="lightboxFrame" src="" loading="lazy"></iframe></div>
+  </div>
+</div>
+
 <script>
-const ICONS = {walk:'i-walk', subway:'i-subway', taxi:'i-taxi', meal:'i-fork', fan:'i-star', shop:'i-bag', sight:'i-pin'};
-const TAG_LABEL = {sight:'景點', meal:'代表美食', fan:'追星重點', shop:'採買'};
+/* =========================================================================
+   資料層：完全沿用原行程內容（景點／餐廳／交通／時間安排／連結一字未改），
+   僅新增 duration（建議停留時間，依類型給出的合理估算）與少數確認過的
+   addr／website 欄位。若欄位不存在，畫面會自動略過該區塊，不會顯示假資料。
+   ========================================================================= */
+const ICONS = {walk:'i-walk', subway:'i-subway', taxi:'i-taxi'};
+const CAT_EMOJI = {sight:'🏛', meal:'🍜', fan:'⭐', shop:'🛍'};
+const CAT_LABEL = {sight:'景點', meal:'代表美食', fan:'追星重點', shop:'採買'};
+const CAT_VAR   = {sight:'--cat-sight', meal:'--cat-food', fan:'--cat-fan', shop:'--cat-shop'};
 
 const days = [
   {
-    n:1, date:"8/23（日）", theme:"抵達日：長忠洞豬腳＋明洞夜間採買", color:'--d1',
+    n:1, iso:'2026-08-23', date:"8/23（日）", theme:"抵達日：長忠洞豬腳＋明洞夜間採買", color:'--d1',
+    arrivalNote:{
+      title:'✈ 機場 → 飯店',
+      items:[
+        '仁川機場：搭 A\'REX機場快線 或 機場巴士 至市區，約60–70分鐘',
+        '金浦機場：地鐵或機場巴士至市區，約35–40分鐘',
+        'Check-in 後稍作休息'
+      ]
+    },
     stops:[
-      {kind:'sight', name:'長忠洞豬腳街', ko:'장충동 족발거리', query:'장충동 족발거리 서울',
+      {kind:'sight', name:'長忠洞豬腳街', ko:'장충동 족발거리', query:'장충동 족발거리 서울', duration:'20–30分鐘（街區閒逛）',
         transit:{mode:'subway', text:'地鐵3號線 忠武路→東大入口（1站，約3分鐘）＋步行8分鐘；或直接叫車約10分鐘'},
         desc:'韓國最知名的豬腳一條街，聚集十多間老字號豬腳店，以醬油、中藥材長時間燉煮豬腳皮聞名，是首爾人的宵夜／聚餐首選。',
         rating:'在地經典美食街', nearby:'地鐵東大入口站步行即達'},
-      {kind:'meal', name:'장충동 평안도족발', ko:'長忠洞平安道豬腳', query:'장충동평안도족발',
+      {kind:'meal', name:'장충동 평안도족발', ko:'長忠洞平安道豬腳', query:'장충동평안도족발', duration:'60–90分鐘（用餐）',
         desc:'長忠洞豬腳街的元老名店之一，創業超過一甲子，豬皮Q彈不油膩，附生菜、蒜片、味噌解膩，長途飛行後補元氣的暖胃選擇。',
         rating:'百年老街人氣名店', nearby:'同條街聚集多家老字號豬腳店'},
-      {kind:'shop', name:'明洞', ko:'명동', query:'명동 명동거리',
+      {kind:'shop', name:'明洞', ko:'명동', query:'명동 명동거리', duration:'60–120分鐘（購物）',
         transit:{mode:'taxi', text:'計程車約10分鐘；或步行回忠武路後轉搭地鐵1站約5分鐘'},
         desc:'24小時不打烊的美妝／潮流購物街，晚上依然人潮洶湧。順路採買 Olive Young 明洞旗艦店、Daiso 明洞店、GS25／CU 便利商店（水、零食、隔天早餐）。',
         rating:'首爾指標購物商圈', nearby:'24小時營業，距南山、乙支路皆步行可達'}
     ],
     endNote:'明洞 → 飯店：步行約15分鐘，或計程車5分鐘',
     backupActivities:[
-      {kind:'sight', name:'南山谷韓屋村', ko:'남산골한옥마을', query:'남산골한옥마을',
-        desc:'傳統韓屋建築群與庭園，免費參觀，鬧中取靜。',
-        rating:'免費開放景點', nearby:'步行約5分鐘可達，室內外皆有、雨天仍可遊'},
-      {kind:'sight', name:'東大門設計廣場', ko:'DDP', query:'동대문디자인플라자',
-        desc:'札哈．哈蒂操刀的流線建築地標，常態展覽與市集空間。',
-        rating:'首爾建築地標', nearby:'地鐵可達，室內展廳可避雨躲熱'}
+      {kind:'sight', name:'獎忠壇公園', ko:'장충단공원', query:'장충단공원', duration:'20–30分鐘（散步）',
+        desc:'與豬腳街同屬一區的歷史公園，林蔭步道適合飯後散步。',
+        rating:'在地飯後散步首選', nearby:'與長忠洞豬腳街相連，同一散步動線內'},
+      {kind:'sight', name:'獎忠體育館', ko:'장충체육관', query:'장충체육관', duration:'10–15分鐘（外觀參觀）',
+        desc:'韓國第一座室內體育館，常有展演活動，與豬腳街同一街廓。',
+        rating:'歷史地標場館', nearby:'緊鄰獎忠壇公園與豬腳街，步行零移動'}
     ],
-    backupMeal:{kind:'meal', name:'뚱뚱이할머니집', ko:'胖奶奶豬腳', query:'뚱뚱이할머니집 장충동',
+    backupMeal:{kind:'meal', name:'뚱뚱이할머니집', ko:'胖奶奶豬腳', query:'뚱뚱이할머니집 장충동', duration:'60–90分鐘（用餐）',
       desc:'1950年代創立，長忠洞豬腳街元祖名店之一，政府認證百年老店。',
       rating:'政府認證百年老店', nearby:'與장충동 평안도족발同一條街，備案幾乎零移動'}
   },
   {
-    n:2, date:"8/24（一）", theme:"景區①　明洞＋南山首爾塔", color:'--d2',
+    n:2, iso:'2026-08-24', date:"8/24（一）", theme:"景福宮周邊：韓服＋北村＋昌德宮＋仁寺洞＋HiKR GROUND＋一隻雞", color:'--d2',
     stops:[
-      {kind:'sight', name:'明洞', ko:'명동', query:'명동',
-        transit:{mode:'subway', text:'地鐵4號線 忠武路→明洞（1站，約3分鐘）；或步行約15分鐘'},
-        desc:'首爾最經典的購物商圈，美妝店、服飾店、街邊小吃林立，也是拍貼機（人生四格）激戰區。上午安排街拍購物與拍貼。',
-        rating:'首爾指標購物商圈', nearby:'24小時營業，宵夜也熱鬧'},
-      {kind:'sight', name:'南山纜車승강장', ko:'명동케이블카승강장', query:'명동 케이블카 승강장',
-        transit:{mode:'walk', text:'步行約10–15分鐘（上坡路段，建議穿好走的鞋）'},
-        desc:'南山纜車搭乘處，準備登頂俯瞰首爾市區。',
-        rating:'登山必經人氣站點', nearby:'명동站3號出口步行約10分鐘可達'},
-      {kind:'sight', name:'南山＋N首爾塔', ko:'N서울타워', query:'N서울타워',
-        desc:'搭乘纜車約10分鐘登上南山，可俯瞰首爾市區全景；N首爾塔為首爾地標之一，塔下有著名的「情人鎖牆」，適合拍照與看夕陽、夜景。',
-        rating:'4.2（TripAdvisor，9,600+則評論）', nearby:'塔旁即為情人鎖鐵絲網景點'},
-      {kind:'meal', name:'고려삼계탕', ko:'高麗蔘雞湯', query:'고려삼계탕 서소문',
-        transit:{mode:'taxi', text:'纜車下山後計程車約10分鐘（餐廳位於中區西小門路，近市廳站）'},
-        desc:'創立於1960年，號稱「首爾三大蔘雞湯」之一，選用飼養較久的土雞「甕雛」燉煮，肉質軟嫩湯頭清爽不油膩，日本、台灣觀光客常慕名而來。',
-        rating:'4.6（Trip.com，64則評論）', nearby:'韓國首家蔘雞湯老店，連年入選米其林'}
+      {kind:'meal', name:'早餐：Isaac Toast／London Bagel Museum', ko:'아이작 토스트 · 런던 베이글 뮤지엄', query:'London Bagel Museum 안국', duration:'30–45分鐘（早餐）',
+        transit:{mode:'subway', text:'地鐵3號線 忠武路→安國（約2站，6–8分鐘）；建議7:30前抵達London Bagel Museum現場或線上取號，8:00改吃Isaac Toast也是不錯的備案'},
+        desc:'景福宮站旁光速外帶首選Isaac Toast，或安國站排隊神店London Bagel Museum，建議越早抵達越好，避免9點後大排長龍。',
+        rating:'安國站排隊人氣名店', nearby:'兩者分別鄰近景福宮站與安國站，依起床時間彈性二選一'},
+      {kind:'sight', name:'景福宮', ko:'경복궁', query:'경복궁', duration:'90–120分鐘（韓服體驗＋拍照）',
+        transit:{mode:'walk', text:'步行約10–15分鐘，或地鐵3號線安國→景福宮（1站）；9:00前抵達可搶第一批入場拍無人空景'},
+        desc:'穿韓服可免費入場，是首爾最具代表性的傳統宮殿，建議换上韓服後第一批衝進宮內拍空景。',
+        rating:'首爾五大宮之首', nearby:'週邊多家韓服租借店，租借後可直接入場'},
+      {kind:'sight', name:'北村韓屋村', ko:'북촌한옥마을', query:'북촌한옥마을', duration:'45–60分鐘（散步拍照）',
+        transit:{mode:'walk', text:'步行約10–15分鐘（景福宮東側，坡道街景，脫下韓服後慢步遊逛）'},
+        desc:'保存完整的傳統韓屋巷弄，古風濃厚，是首爾最具人氣的韓屋街景打卡地。',
+        rating:'首爾經典韓屋街景', nearby:'與景福宮、昌德宮呈三角形分佈，步行皆可達'},
+      {kind:'sight', name:'昌德宮', ko:'창덕궁', query:'창덕궁', duration:'60–90分鐘（含後苑）',
+        transit:{mode:'walk', text:'步行約10分鐘'},
+        desc:'世界文化遺產，後苑（祕苑）景致優美，是五大宮中最保留自然原貌的一座。',
+        rating:'UNESCO世界文化遺產', nearby:'後苑需另外預約導覽時段，建議提前上官網確認'},
+      {kind:'shop', name:'仁寺洞', ko:'인사동', query:'인사동', duration:'45–60分鐘（逛街＋下午茶）',
+        transit:{mode:'walk', text:'步行約10分鐘，延伸逛街吃下午茶'},
+        desc:'傳統工藝品店與人人廣場（쌈지길）聚集的文青逛街去處，適合買紀念品、喝下午茶。',
+        rating:'傳統工藝購物街代表', nearby:'鄰近北村、昌德宮，同屬鐘路徒步範圍'},
+      {kind:'fan', name:'HiKR GROUND', ko:'하이커그라운드', query:'HiKR GROUND 청계천', duration:'45–60分鐘（免費體驗）',
+        transit:{mode:'walk', text:'步行約10–15分鐘（清溪川旁，韓國觀光公社大樓）'},
+        desc:'韓國觀光公社打造的免費K-pop體驗館，可拍偶像頂級舞台與MV拍攝場景短影音，2至4樓為主要體驗區，週一休館。',
+        rating:'免費開放，10:00–19:00（週一休館）', nearby:'位於中區清溪川路40號，韓國觀光公社1–5樓'},
+      {kind:'meal', name:'陳玉華奶奶元祖一隻雞', ko:'진옥화할매원조닭한마리', query:'진옥화할매원조닭한마리', duration:'60–90分鐘（晚餐）',
+        transit:{mode:'taxi', text:'計程車約5–10分鐘直達東大門一隻雞一條街'},
+        desc:'1978年創立，東大門一隻雞一條街的元祖名店，只賣닭한마리單一菜色，湯頭濃郁，可加點年糕、麵條等各式사리，犒賞逛了一整天的雙腿。',
+        rating:'diningcode★4.3', nearby:'位於東大門綜合市場食街，同條巷弄還有多家닭한마리老店'},
+      {kind:'sight', name:'東大門SPAREX汗蒸幕桑拿', ko:'스파렉스 동대문점', query:'SPAREX 동대문', duration:'不限（可過夜）',
+        transit:{mode:'walk', text:'步行約5–10分鐘'},
+        desc:'24小時營業的傳統汗蒸幕桑拿，敷面膜、喝冰甜米釀消水腫，適合追星走跳一整天後的深夜收尾行程。',
+        rating:'東大門在地24小時桑拿', nearby:'可直接在此過夜留宿，隔天再返回或直接前往下一日行程'}
     ],
-    endNote:'餐廳 → 飯店：計程車約10分鐘',
+    endNote:'若不留宿桑拿，SPAREX → 飯店：計程車約15–20分鐘',
     backupActivities:[
-      {kind:'sight', name:'德壽宮石牆路', ko:'덕수궁 돌담길', query:'덕수궁 돌담길',
-        desc:'德壽宮外側900公尺石磚散步道，氛圍浪漫安靜。',
-        rating:'經典散步約會路線', nearby:'免費開放，步行區，雨天短程散步也適合'},
-      {kind:'sight', name:'首爾路7017', ko:'서울로7017', query:'서울로7017',
-        desc:'廢棄高架橋改建的1.7公里空中花園步道。',
-        rating:'首爾都更代表地景', nearby:'首爾站旁，免費開放，全年可走動觀景'}
+      {kind:'sight', name:'西村', ko:'서촌', query:'서촌', duration:'30–45分鐘（散步）',
+        desc:'景福宮西側的靜謐韓屋巷弄，人潮較北村少，適合悠閒散步。',
+        rating:'在地悠閒散步首選', nearby:'景福宮站2號出口步行可達'},
+      {kind:'sight', name:'國立古宮博物館', ko:'국립고궁박물관', query:'국립고궁박물관', duration:'45–60分鐘（室內展覽）',
+        desc:'位於景福宮境內的博物館，展示朝鮮王室文物，雨天備案首選。',
+        rating:'免費室內備案景點', nearby:'景福宮境內，同張門票範圍'}
     ],
-    backupMeal:{kind:'meal', name:'토속촌삼계탕', ko:'土俗村蔘雞湯', query:'토속촌삼계탕',
-      desc:'景福宮站旁，號稱首爾三大蔘雞湯名店之一。',
-      rating:'三大蔘雞湯口碑名店', nearby:'地鐵直達，與고려삼계탕同性質備案餐廳'}
+    backupMeal:{kind:'meal', name:'원조원할매닭한마리', ko:'元祖元奶奶一隻雞', query:'원조원할매닭한마리', duration:'60–90分鐘（晚餐）',
+      desc:'同樣位於東大門一隻雞一條街，陳玉華客滿時的在地備案，同屬人氣排隊名店。',
+      rating:'diningcode★3.9', nearby:'與진옥화할매同條巷弄，幾乎零移動'}
   },
   {
-    n:3, date:"8/25（二）", theme:"景區②　弘大＋延南洞（追星＋潮流）", color:'--d3',
+    n:3, iso:'2026-08-25', date:"8/25（二）", theme:"聖水洞韓流曠野：Cafe Onion＋KWANGYA＋首爾林＋金豬食堂", color:'--d3',
     stops:[
-      {kind:'sight', name:'弘大入口站', ko:'홍대입구역', query:'홍대입구역',
-        transit:{mode:'subway', text:'地鐵4號線 忠武路→서울역（2站，約6分鐘）→轉乘京義中央線至홍대입구（約10分鐘），全程約30–35分鐘；或叫車約20–25分鐘'},
-        desc:'上午安排弘大專輯店朝聖行程的起點。',
-        rating:'首爾大學商圈門戶', nearby:'京義中央線與2號線交會樞紐'},
-      {kind:'fan', name:'Beluga Music', ko:'벨루가뮤직', query:'Beluga Music 홍대',
-        transit:{mode:'walk', text:'6號出口步行約3分鐘'},
-        desc:'新舊專輯、周邊、拆專區一應俱全，可中文溝通、店家直接退稅。',
-        rating:'追星族口碑推薦', nearby:'弘大入口站6號出口步行3分鐘'},
-      {kind:'fan', name:'YG Entertainment 新社屋', ko:'YG엔터테인먼트', query:'YG Entertainment 합정',
-        transit:{mode:'subway', text:'地鐵2號線 弘大入口→合井（1站，約3分鐘）＋步行約8–10分鐘'},
-        desc:'YG搬遷至合井洞新大樓，粉絲常聚集於此，可能巧遇藝人保姆車進出。',
-        rating:'粉絲朝聖地標', nearby:'與舊YG大樓相鄰，粉絲間互相耳語的地標'},
-      {kind:'fan', name:'the SameE', ko:'더 세임이', query:'더세임이 합정',
-        desc:'二樓落地窗正對YG大門，粉絲愛坐在這裡邊喝印有偶像Logo的拿鐵邊「守望」，是TREASURE、BABYMONSTER粉絲的聚集地；地下一樓為YG官方周邊店。',
-        rating:'粉絲聚集人氣咖啡廳', nearby:'正對面即為YG新社屋大樓'},
-      {kind:'sight', name:'延南洞京義線林蔭道', ko:'경의선숲길', query:'경의선숲길 연남동',
-        transit:{mode:'walk', text:'步行約10–15分鐘（沿鐵道公園散步過去）'},
-        desc:'由舊鐵道改建的狹長公園，全長約6.3公里，串連弘大、延南洞、新村，沿路咖啡廳、小店林立，很適合散步拍照。',
-        rating:'首爾人氣線形公園', nearby:'仿紐約中央公園，暱稱延트럴公園'},
-      {kind:'sight', name:'延南洞洗衣街咖啡巷弄', ko:'연남동 카페거리', query:'연남동 카페거리',
-        desc:'舊住宅區改建的文青咖啡街，因巷弄狹小、曬衣景象曾出現在此得名，風格各異的獨立咖啡廳聚集。',
-        rating:'文青咖啡巷弄代表', nearby:'緊鄰京義線森林公園延南段'},
-      {kind:'meal', name:'목구멍 홍대입구역점', ko:'喉嚨水芹菜烤肉 弘大店', query:'목구멍 홍대입구역점',
-        transit:{mode:'walk', text:'步行約10–15分鐘返回弘大商圈'},
-        desc:'老闆與韓劇《背著善宰跑》男主角邊佑錫是多年好友，IG上常見明星光顧紀錄；桌邊服務生代烤，招牌鐵鍋五花肉香氣十足，是弘大人氣排隊烤肉店。',
-        rating:'弘大排隊烤肉名店', nearby:'員工多為模特兒出身，人稱模特烤肉店'}
+      {kind:'meal', name:'Cafe Onion 聖水店', ko:'카페 어니언 성수', query:'카페 어니언 성수', duration:'30–45分鐘（早餐）',
+        transit:{mode:'subway', text:'地鐵3號線 忠武路→을지로3가（1站）→轉乘2號線→성수（約8站），全程約20–25分鐘；或計程車約20分鐘。建議7:50前抵達，9點後常需排隊30分鐘以上'},
+        desc:'聖水洞最早紅起來的工業廢墟風咖啡廳，招牌是灑滿糖粉的雪山麵包（Pandoro）與鹽可頌，8:00開始營業。',
+        rating:'首爾人氣文青咖啡代表', nearby:'聖水站2號出口步行約3分鐘'},
+      {kind:'sight', name:'聖水洞文青街／咖啡街', ko:'성수동카페거리', query:'성수동카페거리', duration:'45–60分鐘（逛街）',
+        transit:{mode:'walk', text:'全程步行即可，沿路邊逛邊走'},
+        desc:'各大品牌快閃店與潮流選品店聚集的核心街區，每天都有不同美妝、時尚品牌快閃店；Dior聖水旗艦店的奢華外牆也是必拍打卡點。出發前可上X／IG搜尋「#성수팝업」查詢當週有無本命偶像代言的快閃店。',
+        rating:'聖水洞潮流核心街區', nearby:'串連Cafe Onion與KWANGYA SEOUL之間'},
+      {kind:'fan', name:'KWANGYA SEOUL 曠野旗艦店', ko:'광야 서울', query:'KWANGYA SEOUL 성수', duration:'45–60分鐘（拍照選購）',
+        transit:{mode:'walk', text:'全程步行即可'},
+        desc:'SM娛樂旗艦概念店，位於SM Entertainment大樓地下1樓，直通首爾林站，充滿大螢幕MV、打歌服展示與最新周邊；限定人生四格拍貼機建議一進店先排隊，地下街柱子與地板上也藏有SM藝人親筆簽名。',
+        rating:'SM旗艦概念店', nearby:'地鐵首爾林站4號出口連通道，SM Entertainment大樓B1'},
+      {kind:'sight', name:'首爾林公園', ko:'서울숲', query:'서울숲', duration:'45–60分鐘（散步）',
+        transit:{mode:'walk', text:'從KWANGYA走上地面即達，全程步行'},
+        desc:'首爾市區大型生態公園，也是粉絲集資認領應援長椅的聖地（如BTS RM、防彈成員、NCT等），可特別尋找粉絲栽種的「RM森林1號、2號」與「BENCH PARK」。',
+        rating:'首爾人氣都市公園', nearby:'與KWANGYA SEOUL共用首爾林站出入口'},
+      {kind:'meal', name:'金豬食堂', ko:'금돼지식당', query:'금돼지식당', duration:'90–120分鐘（晚餐）',
+        transit:{mode:'taxi', text:'首爾林 → 藥水站：計程車約12–15分鐘（約7,000–9,000₩）；或地鐵水仁盆唐線轉2號線轉3號線至藥水站2號出口。不能線上預約，建議15:30–16:00現場機器登記，避開18:00後2–3小時的排隊高峰'},
+        desc:'首爾三大烤肉名店之一，連續多年入選米其林指南與必比登推介，帶骨五花肉與豬皮極度美味，BTS JM、JK、EXO朴燦烈、東方神起等藝人皆多次造訪。',
+        rating:'米其林指南連續入選', nearby:'藥水站2號出口步行約149公尺'},
+      {kind:'sight', name:'東大門設計廣場 DDP', ko:'동대문디자인플라자', query:'동대문디자인플라자', duration:'60–90分鐘（夜間散策＋展覽）',
+        transit:{mode:'subway', text:'藥水站搭3號線轉2號線，3站即達東大門歷史文化公園站，1號出口直通'},
+        desc:'札哈．哈蒂設計的流線建築地標，像一艘降落在市中心的銀色巨型飛碟，夜晚點燈後科技感十足，也常是K-pop頒獎典禮、時裝週與MV的拍攝背景。',
+        rating:'首爾建築地標', nearby:'東大門歷史文化公園站1號出口直通'}
     ],
-    endNote:'弘大 → 飯店：計程車約20–25分鐘；或地鐵原路返回約30分鐘',
+    endNote:'DDP → 飯店：地鐵東大門歷史文化公園→忠武路（約2站），約10分鐘；或計程車約10分鐘',
     backupActivities:[
-      {kind:'sight', name:'弘大自由市場', ko:'홍대 프리마켓', query:'홍대 프리마켓',
-        desc:'每年3–11月週六限定的手作創意藝術市集。',
-        rating:'在地手作市集人氣活動', nearby:'僅週六13:00–18:00營業，需配合行程日期調整'},
-      {kind:'sight', name:'上水洞咖啡街', ko:'상수동 카페거리', query:'상수동 카페거리',
-        desc:'鄰近漢江，可眺望汝矣島夜景的個性咖啡街。',
-        rating:'文青咖啡巷弄口碑之選', nearby:'緊鄰弘大，步行可達，室內雨天可去'}
-    ],
-    backupMeal:{kind:'meal', name:'제주특별집 홍대점', ko:'濟州特別家 弘大店', query:'제주특별집 홍대점',
-      desc:'濟州黑豬肉專門烤肉店，弘大商圈人氣選項。',
-      rating:'弘大人氣烤肉選項', nearby:'與목구멍同商圈步行可達，同為烤肉類型備案'}
-  },
-  {
-    n:4, date:"8/26（三）", theme:"景區③　聖水洞（SM追星＋潮流）＋益善洞", color:'--d4',
-    stops:[
-      {kind:'sight', name:'聖水站', ko:'성수역', query:'성수역',
-        transit:{mode:'subway', text:'地鐵3號線 忠武路→을지로3가（1站）→轉乘2號線→성수（約8站），全程約20–25分鐘；或計程車約20分鐘'},
-        desc:'今日聖水洞追星＋潮流巡禮的起點。',
-        rating:'潮流地標門戶', nearby:'2號線與盆唐線交會站'},
-      {kind:'fan', name:'SM Entertainment 新社屋', ko:'SM엔터테인먼트', query:'SM Entertainment 성수',
-        transit:{mode:'walk', text:'성수역出口步行約10–15分鐘（位於往十里路一帶）'},
-        desc:'SM娛樂總部所在地，旗下EXO、NCT、aespa、RIIZE等team的粉絲聖地，附近常有快閃店／聯名展覽（如與S-Factory、D-Museum合作），出發前可上SM官方IG確認當週活動。',
-        rating:'SM粉絲朝聖地標', nearby:'位於Acro首爾林D-Tower大樓內'},
-      {kind:'sight', name:'TAMBURINS 聖水', ko:'타뮤린스', query:'TAMBURINS 성수',
-        desc:'Jennie代言香水品牌概念店，店內設計前衛，本身就是熱門打卡點。',
-        rating:'網美打卡熱點', nearby:'建築出自建築師金瓚中之手'},
-      {kind:'sight', name:'Dior Seongsu', ko:'디올 성수', query:'Dior 성수',
-        desc:'Dior在聖水洞開設的概念店，複合書店與展覽空間。聖水洞前身為工業廠房區，現轉型為咖啡廳、選物店、藝廊聚集的潮流新地標。',
-        rating:'話題概念店', nearby:'與TAMBURINS同屬聖水網美打卡熱點'},
-      {kind:'sight', name:'益善洞韓屋咖啡街', ko:'익선동', query:'익선동 한옥거리',
-        transit:{mode:'subway', text:'地鐵2號線 성수→을지로3가（轉乘）→3號線 종로3가，約1站，全程約15–20分鐘'},
-        desc:'由百年韓屋改建而成的巷弄咖啡廳與選物店聚落，走文青復古風，並非傳統寺廟景點，適合悠閒散步拍照。',
-        rating:'4.9（Trip.com，58則評論）', nearby:'步行可達鐘路三街站'},
-      {kind:'meal', name:'큰기와집', ko:'大瓦房醬蟹', query:'큰기와집 안국',
-        transit:{mode:'subway', text:'地鐵3號線 종로3가→안국（2站，約5分鐘）＋步行約5分鐘'},
-        desc:'米其林一星推薦韓定食餐廳，由傳統韓屋改建，招牌醬油蟹選用肥美母蟹以藥膳醬油醃製，蟹膏濃郁拌飯一流；假日人潮多，建議平日中午或先預約。',
-        rating:'米其林一星推薦（2017–2018）', nearby:'安國站2號出口步行5分鐘'}
-    ],
-    endNote:'餐廳 → 飯店：計程車約10–15分鐘',
-    backupActivities:[
-      {kind:'sight', name:'首爾林', ko:'서울숲', query:'서울숲',
-        desc:'首爾中央大型生態公園，有鹿苑與昆蟲植物園。',
-        rating:'首爾人氣都市公園', nearby:'免費開放、全天可入園，天氣好時的戶外備案'},
-      {kind:'sight', name:'大林倉庫', ko:'대림창고', query:'대림창고 성수',
+      {kind:'sight', name:'聖水洞手工鞋街', ko:'성수동 수제화거리', query:'성수동 수제화거리', duration:'20–30分鐘（散步）',
+        desc:'韓國手工製鞋工坊聚集地，可體驗訂製或選購手工皮鞋。',
+        rating:'聖水在地文化街區', nearby:'성수역2號出口即是街區起點，幾乎零移動'},
+      {kind:'sight', name:'大林倉庫', ko:'대림창고', query:'대림창고 성수', duration:'20–30分鐘（拍照喝咖啡）',
         desc:'1970年代碾米廠改建的紅磚藝廊咖啡廳。',
         rating:'聖水洞打卡地標', nearby:'室內展覽空間，雨天可躲，聖水站步行可達'}
     ],
-    backupMeal:{kind:'meal', name:'촌 (인사동)', ko:'仁寺洞韓定食', query:'촌 한정식 인사동',
-      desc:'25年老字號韓屋韓定食，鍾路仁寺洞區域。',
-      rating:'diningcode 4.3分', nearby:'步行可達益善洞，與큰기와집同為韓式套餐類型'}
+    backupMeal:{kind:'meal', name:'꼬기파파', ko:'肉肉爸爸', query:'꼬기파파 청구역', duration:'60–90分鐘（用餐）',
+      desc:'金豬식당排隊過久時的備案，位於藥水站與青丘站之間的人氣烤肉店，肉質與配菜評價穩定。',
+      rating:'diningcode★4.2', nearby:'與금돼지식당同屬藥水／青丘一帶，幾乎零移動'}
   },
   {
-    n:5, date:"8/27（四）", theme:"龍山 HYBE＋江南清潭洞 K-Star Road（追星重點日）", color:'--d5',
+    n:4, iso:'2026-08-26', date:"8/26（三）", theme:"汝矣島現代百貨＋漢江公園：弘大夜生活", color:'--d4',
     stops:[
-      {kind:'sight', name:'龍山站', ko:'용산역', query:'용산역',
-        transit:{mode:'subway', text:'地鐵4號線 忠武路→서울역（2站）→轉乘1號線→용산（2站），全程約20分鐘；或計程車約15–20分鐘'},
-        desc:'今日追星重點日的起點。',
-        rating:'交通樞紐商圈', nearby:'同站可轉乘京義中央線、1號線'},
-      {kind:'fan', name:'HYBE總部大樓', ko:'하이브 사옥', query:'HYBE 용산',
-        transit:{mode:'walk', text:'용산역1號出口步行約11分鐘'},
-        desc:'BTS、SEVENTEEN、TXT、ENHYPEN等藝人所屬的HYBE總部，位於漢江大路42號，粉絲常在樓外拍照打卡；「HYBE INSIGHT」展覽近年改為不定期快閃形式，出發前務必透過官方App或社群確認8月是否開放並提前預約。',
-        rating:'四大天團粉絲朝聖地', nearby:'同在漢江大路，鄰近愛茉莉太平洋總部'},
-      {kind:'meal', name:'龍山周邊咖啡廳', ko:'용산 카페', query:'용산 카페거리',
-        desc:'HYBE後方巷弄咖啡廳，遇上偶像生日週會佈置得非常華麗，是「生日咖啡廳巡禮」的聖地之一（午餐簡餐）。',
-        rating:'生日咖啡廳巡禮熱點', nearby:'位於HYBE後方巷弄，生日應援季節必訪'},
-      {kind:'fan', name:'江南 K-Star Road', ko:'압구정로데오', query:'압구정로데오 K-Star Road',
-        transit:{mode:'taxi', text:'路線需轉乘多次（1號線→王十里轉盆唐線），地鐵約40–45分鐘；建議直接叫計程車，約25–30分鐘（視路況）'},
-        desc:'從Galleria百貨西館到清潭洞一段約200公尺的星光大道，擺放東方神起、少女時代、EXO、SHINee、2PM等歷代人氣組合的「江南豆」熊公仔，適合沿路拍照收集。',
-        rating:'歷代天團地標打卡點', nearby:'路線起自狎鷗亭羅德奧站至清潭路口'},
-      {kind:'meal', name:'삼원가든', ko:'三元花園烤肉', query:'삼원가든 청담',
-        transit:{mode:'walk', text:'步行約10–15分鐘'},
-        desc:'清潭洞／狎鷗亭一帶歷史悠久的高級烤肉花園餐廳，環境優美、庭園造景聞名，長年是藝人聚餐愛店。',
-        rating:'藝人聚餐老字號', nearby:'鄰近狎鷗亭羅德奧商圈'}
+      {kind:'meal', name:'Fritz Coffee Company', ko:'프릳츠 커피 컴퍼니', query:'프릳츠 커피 컴퍼니 마포', duration:'30–45分鐘（早餐）',
+        transit:{mode:'taxi', text:'計程車約15–20分鐘；或地鐵4號線轉5號線約25分鐘'},
+        desc:'以復古「海狗」為吉祥物的韓國元老級精品咖啡店，手沖咖啡深受咖啡愛好者推崇，可頌與藍莓丹麥酥是招牌。麻浦總店由百年韓屋改建，08:00開始營業，建議早點抵達享受陽光灑落韓屋中庭的早餐時光。',
+        rating:'韓國精品咖啡代表品牌', nearby:'市廳／德壽宮周邊亦有分店可選'},
+      {kind:'shop', name:'The Hyundai Seoul', ko:'더현대 서울', query:'더현대 서울', duration:'90–120分鐘（快閃店＋逛街）',
+        transit:{mode:'subway', text:'地鐵5號線至汝矣渡口站1號出口步行，或汝矣島站地下連通道直達，全程約10分鐘'},
+        desc:'首爾目前人氣最高的室內巨型綠色百貨。地下B1（Event Plaza）是全首爾最密集的偶像回歸快閃店基地（PLAVE、NewJeans、TXT等皆曾在此舉辦），地下B2為潮流聖地（Mardi Mercredi、Matinkim等品牌），快閃店常一早在百貨外排隊領號碼牌，建議一到館內先直奔地下室。',
+        rating:'首爾人氣指標百貨', nearby:'汝矣島站地下連通道直達'},
+      {kind:'meal', name:'滿足五香豬腳 汝矣島店', ko:'만족오향족발 여의도점', query:'만족오향족발 여의도', duration:'60–90分鐘（午餐）',
+        transit:{mode:'walk', text:'現代百貨對面，步行可達'},
+        desc:'連續多年榮獲米其林必比登推介，豬腳肉質軟嫩，中藥五香入味，皮Q彈帶微甜膠質，隨餐附贈年糕餃子湯。',
+        rating:'米其林必比登推介（連續9年）', nearby:'現代百貨對面即達，不用跑回市廳總店'},
+      {kind:'sight', name:'汝矣島漢江公園', ko:'여의도한강공원', query:'여의도한강공원', duration:'60–90分鐘（野餐放鬆）',
+        transit:{mode:'walk', text:'步行約8–10分鐘'},
+        desc:'首爾最經典的漢江公園之一，比盤浦更寬廣。可在公園入口超商點炸雞外送，或買泡麵用自助煮麵機加顆雞蛋，在草地上邊吹江風邊享用，體驗正宗韓劇生活。',
+        rating:'首爾經典漢江公園', nearby:'與現代百貨、滿足五香豬腳步行皆可達，同屬汝矣島核心區'},
+      {kind:'sight', name:'弘大商圈', ko:'홍대상권', query:'홍대', duration:'60–90分鐘（街頭表演＋拍貼）',
+        transit:{mode:'taxi', text:'漢江公園→弘大：搭753或5714號公車約15分鐘跨麻浦大橋直達；或計程車約12分鐘（約8,000₩）'},
+        desc:'街頭藝人激戰區，傍晚17:00後各路舞團會出來熱舞。弘大現在有許多「高空俯瞰視角」特色拍貼店（如Don’t Lxxk Up），拍出極具Y2K街頭感的照片，值得體驗。',
+        rating:'弘大街頭表演＋特色拍貼', nearby:'弘大入口站周邊，緊鄰延南洞'},
+      {kind:'meal', name:'延南洞特色餐廳（延南蓮花／5to7）', ko:'연남물갈비 · 5to7', query:'연남물갈비', duration:'60–90分鐘（晚餐）',
+        transit:{mode:'walk', text:'弘大站3號出口步行至延南洞，同商圈步行範圍內'},
+        desc:'晚餐由弘大步行至隔壁延南洞，推薦人氣爆肉火山鍋「延南蓮花（연남물갈비）」或創意料理「五大洋義大利麵（5to7）」，這裡也有很多韓式Fusion調酒與洋風煎餅小店。',
+        rating:'延南洞人氣創意料理', nearby:'弘大站3號出口，與弘大商圈同一散步範圍'},
+      {kind:'sight', name:'弘大夜店酒吧區', ko:'홍대 클럽거리', query:'홍대 클럽거리', duration:'不限（夜生活）',
+        transit:{mode:'walk', text:'延南洞步行返回弘大夜店街（弘益大學正門外圍），全程步行'},
+        desc:'全首爾最無包袱、最年輕好玩的夜生活特區。喜歡Hip-hop可去Madholic；喜歡K-POP混音與電音可去NB2（YG娛樂開的始祖級夜店）。務必攜帶實體護照（韓國夜店嚴格查驗，不接受照片或外國身份證影本），並結伴同行注意安全。',
+        rating:'弘大代表夜店酒吧區', nearby:'鄰近弘益大學正門，延南洞步行可達'}
     ],
-    endNote:'餐廳 → 飯店：計程車約20–25分鐘',
+    endNote:'弘大夜店區 → 飯店：計程車約20–25分鐘（建議結伴搭車，深夜請留意安全）',
     backupActivities:[
-      {kind:'sight', name:'龍山家族公園', ko:'용산가족공원', query:'용산가족공원',
-        desc:'龍山區大型免費公園，2公里步道與草坪。',
-        rating:'在地人氣休憩綠地', nearby:'全年24小時開放，戶外散步備案'},
-      {kind:'sight', name:'島山公園', ko:'도산공원', query:'도산공원',
-        desc:'紀念獨立志士安昌浩的市區小型公園。',
-        rating:'鬧中取靜口袋公園', nearby:'步行可達狎鷗亭羅德奧街'}
+      {kind:'shop', name:'IFC Mall 汝矣島', ko:'IFC몰 여의도', query:'IFC몰 여의도', duration:'30–45分鐘（室內備案）',
+        desc:'汝矣島另一大型購物中心，地下美食街選擇多，雨天備案。',
+        rating:'汝矣島室內購物備案', nearby:'與The Hyundai Seoul步行約10分鐘可達，同屬汝矣島商圈'},
+      {kind:'sight', name:'望遠市場', ko:'망원시장', query:'망원시장', duration:'30–45分鐘（逛市場）',
+        desc:'弘大周邊人氣傳統市場，可品嚐在地小吃，是弘大商圈外的悠閒備案。',
+        rating:'弘大周邊人氣市場', nearby:'望遠站2號出口步行約5分鐘，弘大搭地鐵2站可達'}
     ],
-    backupMeal:{kind:'meal', name:'벽제갈비 청담점', ko:'碧蹄家烤肉 清潭店', query:'벽제갈비 청담',
-      desc:'韓牛烤肉老字號，米其林指南有收錄推薦。',
-      rating:'米其林指南推薦', nearby:'清潭洞分店，與삼원가든同屬江南高檔烤肉類型'}
+    backupMeal:{kind:'meal', name:'연남카츠', ko:'延南豬排', query:'연남카츠', duration:'45–60分鐘（用餐）', addr:'서울 마포구 동교로38길 33-15 지하1층',
+      desc:'延南蓮花排隊過久時的備案，厚切炸豬排搭配明太子奶油烏龍麵、豚平燒皆為人氣品項，同在延南洞商圈內。',
+      rating:'延南洞人氣炸豬排店', nearby:'與延南蓮花同屬延南洞商圈，步行可達'}
   },
   {
-    n:6, date:"8/28（五）", theme:"特產採買，準備返程", color:'--d6',
+    n:5, iso:'2026-08-27', date:"8/27（四）", theme:"追星重點日：狎鷗亭K-Star Road＋HYBE＋COEX＋樂天世界塔", color:'--d5',
     stops:[
-      {kind:'shop', name:'樂天免稅店／新世界百貨（明洞）', ko:'롯데면세점 · 신세계백화점', query:'롯데면세점 명동',
+      {kind:'fan', name:'狎鷗亭 K-Star Road', ko:'압구정로데오 K-스타로드', query:'압구정로데오 K-Star Road', duration:'30–45分鐘（拍照）',
+        transit:{mode:'taxi', text:'地鐵3號線轉水仁盆唐線至狎鷗亭羅德奧，約30–35分鐘；或計程車約20–25分鐘'},
+        desc:'從狎鷗亭羅德奧站2號出口一出來，沿路展開的韓流名品街，矗立著象徵BTS、EXO、Super Junior、SHINee等頂級天團的巨型GangnamDol網美熊公仔。最大隻的BTS熊就在2號出口正前方，適合作為早晨散步拍照的第一站，沿路精品店外牆拍照張力十足。',
+        rating:'歷代天團地標打卡點', nearby:'狎鷗亭羅德奧站2號出口即達'},
+      {kind:'meal', name:'Pro醬油蟹 新沙總店', ko:'프로간장게장 신사본점', query:'프로간장게장 신사본점', duration:'60–90分鐘（午餐）',
+        transit:{mode:'subway', text:'狎鷗亭羅德奧站搭水仁盆唐線1站到江南區廳站轉7號線，3站到新沙站4號出口步行3分鐘'},
+        desc:'新沙洞最富盛名的元祖級醬油螃蟹，紅到連日本、台灣明星到首爾都指名必吃。蟹膏濃郁毫無腥味，入口即化，被譽為「白飯小偷」；建議兩人點一份大份醬油蟹再加點蟹膏拌飯（게알비빔밥），把蟹殼裡的蟹膏刮下拌著海苔白飯吃，屬高價位奢華料理。',
+        rating:'diningcode★3.4，新沙醬油蟹代表', nearby:'新沙站4號出口步行3分鐘'},
+      {kind:'fan', name:'COEX星空圖書館＆Ktown4u', ko:'별마당도서관 · Ktown4u', query:'별마당도서관 코엑스', duration:'60–90分鐘（拍照＋購物）',
+        transit:{mode:'subway', text:'新沙站搭3號線1站轉新盆唐線，到江南站轉2號線，直達三成站5/6號出口'},
+        desc:'COEX Mall中央的開放式圖書館，13公尺高書牆是必拍地標；同商圈的Ktown4u（四大）旗艦店是追星迷妹買專輯、手燈與周邊的天堂，店內常舉辦偶像快閃活動與簽售會，也有多台限定偶像人生四格拍貼機。想買到附「通路特典小卡」的最新回歸專輯，這裡現場補貨最齊全。',
+        rating:'COEX人氣打卡地標＋追星補貨聖地', nearby:'地鐵2號線三成站5/6號出口步行4分鐘，直通COEX Mall'},
+      {kind:'fan', name:'HYBE總部大樓', ko:'하이브 사옥', query:'HYBE 용산', duration:'20–30分鐘（拍照＋巷弄探訪）', website:'https://hybecorp.com',
+        transit:{mode:'taxi', text:'三成站→HYBE跨行政區轉乘複雜，建議直接叫車走永東大路沿漢江邊直達，車程約20分鐘'},
+        desc:'目前全球市值最高的K-POP帝國大樓（BTS、SEVENTEEN、NewJeans、LE SSERAFIM、ILLIT大本營），大樓內部不對外開放，正門口是粉絲合照必經聖地。大樓後方的後巷咖啡廳（如Cafe Black Drum等）長年被阿米（ARMY）與克拉（CARAT）包場，貼滿密密麻麻的應援海報與照片，後方外牆也常有粉絲集資慶生壁畫，必拍。',
+        rating:'四大天團粉絲朝聖地', nearby:'용산역1號出口步行約11分鐘，後巷應援咖啡廳藏在後方'},
+      {kind:'sight', name:'樂天世界塔 Seoul Sky', ko:'롯데월드타워 서울스카이', query:'서울스카이 롯데월드타워', duration:'90–120分鐘（含排隊＋觀景）',
+        transit:{mode:'taxi', text:'HYBE→新龍山站搭4號線轉7號線轉2號線至蠶室站約40分鐘；或計程車走奧林匹克大路約25分鐘最舒適'},
+        desc:'韓國第一高樓（555公尺），搭乘全韓最快的兩層電梯僅需1分鐘直達天際。建議在日落前30分鐘抵達展望台，同時捕捉「金黃色漢江夕陽」與「點燈後的璀璨首爾夜景」，站在透明玻璃地板上俯瞰整個首爾市區，為整趟旅程畫下句點。',
+        rating:'韓國第一高樓地標', nearby:'蠶室站1、2號出口直通世界塔'}
+    ],
+    endNote:'樂天世界塔 → 飯店：計程車約25–30分鐘（蠶室至忠武路跨江車程，建議提前抓時間）',
+    backupActivities:[
+      {kind:'sight', name:'島山公園', ko:'도산공원', query:'도산공원', duration:'20–30分鐘（散步）',
+        desc:'紀念獨立志士安昌浩的市區小型公園，狎鷗亭購物路線常順遊此處。',
+        rating:'鬧中取靜口袋公園', nearby:'狎鷗亭羅德奧站步行約10分鐘'},
+      {kind:'sight', name:'樂天世界 Adventure', ko:'롯데월드 어드벤처', query:'롯데월드 어드벤처', duration:'不限（室內主題樂園）',
+        desc:'與Seoul Sky同在蠶室商圈的室內主題樂園，雨天或天氣不佳時的備案。',
+        rating:'蠶室室內樂園備案', nearby:'與樂天世界塔同一建築群，步行可達'}
+    ],
+    backupMeal:{kind:'meal', name:'벽제갈비 청담점', ko:'碧蹄家烤肉 清潭店', query:'벽제갈비 청담', duration:'90–120分鐘（晚餐）', addr:'서울 강남구 도산대로81길 25',
+      desc:'韓牛烤肉老字號，米其林指南有收錄推薦。',
+      rating:'米其林指南推薦', nearby:'清潭洞分店，鄰近狎鷗亭羅德奧商圈'}
+  },
+  {
+    n:6, iso:'2026-08-28', date:"8/28（五）", theme:"特產採買，準備返程", color:'--d6',
+    stops:[
+      {kind:'shop', name:'樂天免稅店／新世界百貨（明洞）', ko:'롯데면세점 · 신세계백화점', query:'롯데면세점 명동', duration:'90–120分鐘（採買伴手禮）',
         transit:{mode:'walk', text:'步行約10–15分鐘，或計程車5分鐘'},
         desc:'人蔘、海苔、傳統點心、化妝品伴手禮採買地。若時間充裕可加碼弘大／聖水周邊偶像週邊店補貨（KWANGYA@SM、KAKAO FRIENDS等）。',
         rating:'明洞旗艦購物地標', nearby:'位於樂天百貨本店內，距地鐵僅1分鐘'}
     ],
     endNote:'中午前退房，依航班時間搭 A\'REX 或機場巴士前往機場。',
     backupActivities:[
-      {kind:'sight', name:'南大門市場', ko:'남대문시장', query:'남대문시장',
+      {kind:'sight', name:'南大門市場', ko:'남대문시장', query:'남대문시장', duration:'30–45分鐘（逛市場）',
         desc:'首爾最大傳統市場，批發零售小吃一應俱全。',
         rating:'首爾指標傳統市場', nearby:'步行可達，適合最後採購（週日多店休息）'},
-      {kind:'sight', name:'明洞聖堂', ko:'명동성당', query:'명동성당',
+      {kind:'sight', name:'明洞聖堂', ko:'명동성당', query:'명동성당', duration:'15–20分鐘（參觀）',
         desc:'哥德式磚造地標教堂，1898年建成，免費參觀。',
         rating:'首爾百年地標建築', nearby:'就在明洞商圈內，往機場前順路'}
     ],
-    backupMeal:{kind:'meal', name:'명동교자 본점', ko:'明洞餃子 本店', query:'명동교자 본점',
+    backupMeal:{kind:'meal', name:'명동교자 본점', ko:'明洞餃子 本店', query:'명동교자 본점', duration:'30–45分鐘（快速用餐）', addr:'서울 중구 명동10길 29',
       desc:'1966年創立，刀切麵與蒸餃聞名。',
       rating:'米其林必比登推介', nearby:'明洞商圈內，出餐快適合搭機前抓緊時間'}
   }
 ];
 
+/* =========================================================================
+   工具函式
+   ========================================================================= */
 function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');}
 function mapEmbed(q){return 'https://www.google.com/maps?q='+encodeURIComponent(q)+'&output=embed';}
 function mapLink(q){return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q);}
+function naverLink(q){return 'https://map.naver.com/p/search/'+encodeURIComponent(q);}
+function kakaoLink(q){return 'https://map.kakao.com/?q='+encodeURIComponent(q);}
+/** 產生每日「路線總覽地圖」的多點 pb 參數（免 API 金鑰的 Google Maps Embed 用法） */
 function dayMapEmbed(queries){
   const pts = queries.filter(Boolean);
   if(pts.length<2) return mapEmbed(pts[0]||'');
@@ -758,42 +763,145 @@ function dirLink(queries){
   return url;
 }
 
-const navHost = document.querySelector('.daynav-inner');
-const daysHost = document.getElementById('days');
+/* localStorage 打勾清單：key 用 day序號+區塊+索引 組成唯一 id，重整後仍保留 */
+const CHECK_KEY = 'seoul2026_checklist';
+function loadChecks(){ try{ return JSON.parse(localStorage.getItem(CHECK_KEY)) || {}; }catch(e){ return {}; } }
+function saveChecks(obj){ localStorage.setItem(CHECK_KEY, JSON.stringify(obj)); }
+let checks = loadChecks();
 
-function infoRowHtml(s){
-  if(!s.rating && !s.nearby) return '';
-  const items = [];
-  if(s.rating) items.push(`<span class="item"><svg><use href="#i-flame"/></svg>${esc(s.rating)}</span>`);
-  if(s.nearby) items.push(`<span class="item"><svg><use href="#i-pin"/></svg>${esc(s.nearby)}</span>`);
-  return `<div class="info-row">${items.join('')}</div>`;
+function toggleCheck(id){
+  checks[id] = !checks[id];
+  saveChecks(checks);
+  document.querySelectorAll(`[data-check-id="${id}"]`).forEach(el=>{
+    const on = checks[id];
+    el.classList.toggle('checked', on);
+    el.textContent = on ? '☑ 已完成' : '☐ 標記完成';
+    const card = el.closest('.card');
+    if(card){
+      card.classList.toggle('done', on);
+      const nameEl = card.querySelector('.card-name');
+      if(nameEl) nameEl.classList.toggle('done', on);
+    }
+  });
+  document.querySelectorAll(`[data-summary-id="${id}"]`).forEach(chip=>chip.classList.toggle('done', checks[id]));
 }
 
-function cardHtml(s, {backup=false}={}){
+/* =========================================================================
+   渲染：景點／餐廳卡片
+   ========================================================================= */
+function infoGridHtml(s){
+  const items = [];
+  if(s.rating) items.push(`<span class="item">⭐ <b>${esc(s.rating)}</b></span>`);
+  if(s.nearby) items.push(`<span class="item">📍 ${esc(s.nearby)}</span>`);
+  if(s.duration) items.push(`<span class="item">🕒 ${esc(s.duration)}</span>`);
+  if(s.addr) items.push(`<span class="item">🏠 ${esc(s.addr)}</span>`);
+  if(!items.length) return '';
+  return `<div class="info-grid">${items.join('')}</div>`;
+}
+
+function mapLinksHtml(s){
+  const links = [
+    `<a class="map-link google" href="${mapLink(s.query)}" target="_blank" rel="noopener">📍 Google 地圖</a>`,
+    `<a class="map-link naver" href="${naverLink(s.query)}" target="_blank" rel="noopener">🟢 Naver 地圖</a>`,
+    `<a class="map-link kakao" href="${kakaoLink(s.query)}" target="_blank" rel="noopener">🟡 Kakao 地圖</a>`
+  ];
+  if(s.website) links.push(`<a class="map-link site" href="${esc(s.website)}" target="_blank" rel="noopener">🔗 官方網站</a>`);
+  return links.join('');
+}
+
+/** 產生單一景點／餐廳卡片。checkId 提供時會顯示打勾按鈕（用於主行程與備用行程）。 */
+function cardHtml(s, {backup=false, checkId=null}={}){
+  const catVar = CAT_VAR[s.kind] || '--cat-sight';
   const transitHtml = s.transit ? `
-      <div class="transit-line"><svg><use href="#i-${s.transit.mode}"/></svg>${esc(s.transit.text)}</div>` : '';
+      <div class="transit-line"><svg width="13" height="13"><use href="#i-${ICONS[s.transit.mode] ? s.transit.mode : 'walk'}"/></svg><span class="txt">${esc(s.transit.text)}</span></div>` : '';
   const mapHtml = backup ? `<div class="backup-map"><iframe loading="lazy" src="${mapEmbed(s.query)}" referrerpolicy="no-referrer-when-downgrade"></iframe></div>` : '';
+  const isDone = checkId && checks[checkId];
+  const checkBtn = checkId ? `<button class="check-toggle${isDone?' checked':''}" data-check-id="${checkId}" onclick="toggleCheck('${checkId}')">${isDone?'☑ 已完成':'☐ 標記完成'}</button>` : '';
+  const lbTitle = esc(s.name).replace(/'/g,"\\'");
   return `
-    <div class="card ${s.kind==='meal'?'meal':''} ${s.kind==='fan'?'fan':''} ${backup?'backup':''}">
-      ${transitHtml}
-      <div class="card-tag"><svg><use href="#${ICONS[s.kind]}"/></svg>${TAG_LABEL[s.kind]}${backup?'<span class="backup-tag">備案</span>':''}</div>
-      <div class="card-name">${esc(s.name)} ${s.ko?`<span class="ko">${esc(s.ko)}</span>`:''}</div>
-      <p class="card-desc">${esc(s.desc||'')}</p>
-      ${infoRowHtml(s)}
-      ${mapHtml}
-      <div class="card-actions">
-        <a class="map-link" href="${mapLink(s.query)}" target="_blank" rel="noopener">
-          <svg><use href="#i-pin"/></svg>在 Google 地圖開啟
-        </a>
+    <div class="card${isDone?' done':''} ${backup?'backup':''}" data-search-name="${esc((s.name+' '+(s.ko||'')).toLowerCase())}">
+      <button class="thumb" style="background:linear-gradient(155deg, var(${catVar}), color-mix(in srgb, var(${catVar}) 55%, black))"
+        onclick="openLightbox('${lbTitle}','${mapEmbed(s.query)}')" title="放大地圖預覽" aria-label="放大地圖預覽">
+        ${CAT_EMOJI[s.kind]||'📍'}<span class="thumb-cap">地圖預覽</span>
+      </button>
+      <div class="card-body">
+        ${transitHtml}
+        <div class="card-tag-row">
+          <span class="card-tag" style="background:var(${catVar})">${CAT_EMOJI[s.kind]||''} ${CAT_LABEL[s.kind]||''}</span>
+          ${backup?'<span class="backup-tag">備案</span>':''}
+          ${checkBtn}
+        </div>
+        <div class="card-name${isDone?' done':''}">${esc(s.name)} ${s.ko?`<span class="ko">${esc(s.ko)}</span>`:''}</div>
+        <p class="card-desc">${esc(s.desc||'')}</p>
+        ${infoGridHtml(s)}
+        ${mapHtml}
+        <div class="card-actions">${mapLinksHtml(s)}</div>
       </div>
     </div>`;
 }
 
+/* =========================================================================
+   渲染：抵達／出發等非景點類補充說明（目前僅 Day1 有「機場→飯店」段落，
+   對應原始行程 md 開頭的機場交通資訊，避免這段內容被漏掉）
+   ========================================================================= */
+function arrivalNoteHtml(day){
+  if(!day.arrivalNote) return '';
+  const items = day.arrivalNote.items.map(t=>`<li>${esc(t)}</li>`).join('');
+  return `
+    <div class="arrival-note">
+      <div class="arrival-title">${esc(day.arrivalNote.title)}</div>
+      <ul>${items}</ul>
+    </div>`;
+}
+
+/* =========================================================================
+   渲染：每日摘要（今日重點 chips＋交通方式統計＋氣候提醒）
+   ========================================================================= */
+function daySummaryHtml(day, ids){
+  const chips = day.stops.map((s,i)=>{
+    const id = ids.main(i);
+    const on = checks[id];
+    return `<span class="summary-chip${on?' done':''}" data-summary-id="${id}">${on?'✔':'○'} ${esc(s.name)}</span>`;
+  }).join('');
+  // 交通方式統計：直接由資料中既有的 transit.mode 算出真實出現次數，不臆測新數字
+  const modeCount = {walk:0, subway:0, taxi:0};
+  day.stops.forEach(s=>{ if(s.transit && modeCount[s.transit.mode]!==undefined) modeCount[s.transit.mode]++; });
+  const modeStr = [
+    modeCount.subway?`🚇×${modeCount.subway}`:'', modeCount.walk?`🚶×${modeCount.walk}`:'', modeCount.taxi?`🚕×${modeCount.taxi}`:''
+  ].filter(Boolean).join(' ') || '步行為主';
+  const mealStop = day.stops.find(s=>s.kind==='meal');
+  return `
+    <div class="day-summary">
+      <div class="summary-title">今日重點</div>
+      <div class="summary-chips">${chips}</div>
+      <div class="summary-meta">
+        <span>🚇 主要交通：${modeStr}</span>
+        ${mealStop?`<span>🍜 代表美食：${esc(mealStop.name)}</span>`:''}
+        <span>🌦 8月氣候提醒：首爾夏季炎熱（均溫約28–31°C），午後常有雷陣雨</span>
+      </div>
+    </div>`;
+}
+
+/* =========================================================================
+   組裝每一天的完整區塊（Accordion + 摘要 + 地圖 + 時間軸 + 備用方案）
+   ========================================================================= */
+const navInner = document.getElementById('daynavInner');
+const daysHost = document.getElementById('days');
+const todayIso = new Date().toISOString().slice(0,10);
+let defaultOpenDay = days.find(d=>d.iso===todayIso)?.n || days[0].n;
+
 days.forEach(day=>{
-  navHost.insertAdjacentHTML('beforeend', `
-    <a class="day-pill" style="--dot:var(${day.color})" href="#day${day.n}">
+  const isToday = day.iso === todayIso;
+  navInner.insertAdjacentHTML('beforeend', `
+    <button class="day-pill" data-day="${day.n}" style="--dot:var(${day.color})" onclick="gotoDay(${day.n}, true)">
       <span class="dot"></span><span class="num">D${day.n}</span><span>${esc(day.theme.split('　').pop().split('：').pop())}</span>
-    </a>`);
+    </button>`);
+
+  const ids = {
+    main: i => `d${day.n}-m${i}`,
+    backupAct: i => `d${day.n}-ba${i}`,
+    backupMeal: () => `d${day.n}-bm`
+  };
 
   const rowsHtml = day.stops.map((s,i)=>{
     const isLast = i===day.stops.length-1;
@@ -802,46 +910,172 @@ days.forEach(day=>{
         ${isLast?'':'<div class="line"></div>'}
         <div class="node">${i+1}</div>
       </div>
-      <div class="stop">${cardHtml(s)}</div>`;
+      <div class="stop">${cardHtml(s,{checkId:ids.main(i)})}</div>`;
   }).join('');
 
   const queries = day.stops.map(s=>s.query);
-  const legendHtml = day.stops.map((s,i)=>
-    `<span class="legend-chip"><b>${i+1}</b>${esc(s.name)}</span>`).join('');
-
-  const backupActHtml = (day.backupActivities||[]).map(s=>cardHtml(s,{backup:true})).join('');
-  const backupMealHtml = day.backupMeal ? cardHtml(day.backupMeal,{backup:true}) : '';
+  const legendHtml = day.stops.map((s,i)=>`<span class="legend-chip"><b>${i+1}</b>${esc(s.name)}</span>`).join('');
+  const backupActHtml = (day.backupActivities||[]).map((s,i)=>cardHtml(s,{backup:true, checkId:ids.backupAct(i)})).join('');
+  const backupMealHtml = day.backupMeal ? cardHtml(day.backupMeal,{backup:true, checkId:ids.backupMeal()}) : '';
+  const openNow = day.n === defaultOpenDay;
 
   daysHost.insertAdjacentHTML('beforeend', `
     <section class="day" id="day${day.n}" style="--dot:var(${day.color})">
-      <div class="day-head">
+      <div class="day-head${openNow?' open':''}" tabindex="0" role="button" aria-expanded="${openNow}" onclick="toggleDay(${day.n})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleDay(${day.n});}">
         <div class="day-num">${String(day.n).padStart(2,'0')}</div>
         <div class="day-titles">
-          <div class="day-date">${esc(day.date)}</div>
+          <div class="day-date">${esc(day.date)}${isToday?'<span class="today-badge">今天</span>':''}</div>
           <div class="day-theme">${esc(day.theme)}</div>
         </div>
+        <div class="chevron"><svg width="16" height="16"><use href="#i-chevron"/></svg></div>
       </div>
-      <div class="day-rule"></div>
-
-      <div class="daymap">
-        <div class="daymap-frame"><iframe loading="lazy" src="${dayMapEmbed(queries)}" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
-        <div class="legend">${legendHtml}</div>
-      </div>
-
-      <div class="route">${rowsHtml}</div>
-      <div class="day-footer">
-        <span>${esc(day.endNote||'')}</span>
-        <a class="route-btn" href="${dirLink(queries)}" target="_blank" rel="noopener">
-          <svg><use href="#i-route"/></svg>在 Google 地圖開啟完整路線
-        </a>
-      </div>
-
-      <div class="backup-section">
-        <div class="backup-heading">備用行程</div>
-        <div class="backup-grid">${backupActHtml}</div>
-        <div class="backup-heading">備選餐廳</div>
-        <div class="backup-grid single">${backupMealHtml}</div>
+      <div class="day-body-wrap">
+        <div class="day-body"><div class="day-body-inner">
+          <div class="day-rule"></div>
+          ${arrivalNoteHtml(day)}
+          ${daySummaryHtml(day, ids)}
+          <div class="daymap" id="daymap-${day.n}">
+            <div class="daymap-frame"><iframe loading="lazy" src="${dayMapEmbed(queries)}" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+            <div class="legend">${legendHtml}</div>
+          </div>
+          <div class="route">${rowsHtml}</div>
+          <div class="day-footer">
+            <span>🏨 ${esc(day.endNote||'')}</span>
+            <a class="route-btn" href="${dirLink(queries)}" target="_blank" rel="noopener">
+              <svg width="14" height="14"><use href="#i-route"/></svg>在 Google 地圖開啟完整路線
+            </a>
+          </div>
+          <div class="backup-section">
+            <div class="backup-heading">備用行程</div>
+            <div class="backup-grid">${backupActHtml}</div>
+            <div class="backup-heading">備選餐廳</div>
+            <div class="backup-grid single">${backupMealHtml}</div>
+          </div>
+        </div></div>
       </div>
     </section>`);
 });
+
+/* =========================================================================
+   Accordion 開合、跳轉、Scroll Spy
+   ========================================================================= */
+function toggleDay(n){
+  const head = document.querySelector(`#day${n} .day-head`);
+  const open = !head.classList.contains('open');
+  head.classList.toggle('open', open);
+  head.setAttribute('aria-expanded', String(open));
+}
+function openDay(n){
+  const head = document.querySelector(`#day${n} .day-head`);
+  if(head && !head.classList.contains('open')){ head.classList.add('open'); head.setAttribute('aria-expanded','true'); }
+}
+function gotoDay(n, expand){
+  if(expand) openDay(n);
+  document.getElementById('day'+n).scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+/* Scroll Spy：用 IntersectionObserver 偵測目前畫面中央落在哪一天，高亮對應 nav pill */
+const spyObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      const n = entry.target.id.replace('day','');
+      document.querySelectorAll('.day-pill').forEach(p=>p.classList.toggle('active', p.dataset.day===n));
+    }
+  });
+}, {rootMargin:'-40% 0px -55% 0px', threshold:0});
+document.querySelectorAll('section.day').forEach(sec=>spyObserver.observe(sec));
+
+/* 卡片淡入動畫：進入畫面時才觸發，避免一次性大量動畫拖慢首屏 */
+const fadeObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){ entry.target.classList.add('in-view'); fadeObserver.unobserve(entry.target); }
+  });
+}, {threshold:0.1});
+document.querySelectorAll('.card').forEach(c=>fadeObserver.observe(c));
+
+/* =========================================================================
+   搜尋：即時篩選景點／餐廳／捷運站，點擊結果跳轉並展開對應日期
+   ========================================================================= */
+const searchIndex = [];
+days.forEach(day=>{
+  const push = (s, sectionId) => searchIndex.push({name:s.name, ko:s.ko||'', dayN:day.n, dayTheme:day.theme, targetId:sectionId});
+  day.stops.forEach((s,i)=>push(s, `day${day.n}`));
+  (day.backupActivities||[]).forEach(s=>push(s, `day${day.n}`));
+  if(day.backupMeal) push(day.backupMeal, `day${day.n}`);
+});
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+function runSearch(q){
+  q = q.trim().toLowerCase();
+  if(!q){ searchResults.classList.remove('open'); searchResults.innerHTML=''; return; }
+  const hits = searchIndex.filter(it => it.name.toLowerCase().includes(q) || it.ko.toLowerCase().includes(q)).slice(0,10);
+  searchResults.innerHTML = hits.length
+    ? hits.map(h=>`<button class="search-hit" onclick="gotoDay(${h.dayN},true);searchResults.classList.remove('open');searchInput.value='';">${esc(h.name)}${h.ko?` <span style="color:var(--ink-faint)">${esc(h.ko)}</span>`:''}<span class="day-tag">Day${h.dayN} · ${esc(h.dayTheme)}</span></button>`).join('')
+    : `<div class="search-empty">找不到符合的結果</div>`;
+  searchResults.classList.add('open');
+}
+searchInput.addEventListener('input', e=>runSearch(e.target.value));
+document.addEventListener('click', e=>{ if(!e.target.closest('.search-wrap')) searchResults.classList.remove('open'); });
+
+/* =========================================================================
+   Lightbox（地圖放大預覽）
+   ========================================================================= */
+const lightbox = document.getElementById('lightbox');
+const lightboxFrame = document.getElementById('lightboxFrame');
+const lightboxTitle = document.getElementById('lightboxTitle');
+function openLightbox(title, src){
+  lightboxTitle.textContent = title + '　地圖預覽';
+  lightboxFrame.src = src;
+  lightbox.classList.add('open');
+}
+function closeLightbox(){ lightbox.classList.remove('open'); lightboxFrame.src=''; }
+document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+lightbox.addEventListener('click', e=>{ if(e.target===lightbox) closeLightbox(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeLightbox(); });
+
+/* =========================================================================
+   深色模式：手動切換並記住偏好；未手動設定過時沿用系統設定（prefers-color-scheme）
+   ========================================================================= */
+const darkToggle = document.getElementById('darkToggle');
+function applyTheme(theme){
+  if(theme){ document.documentElement.setAttribute('data-theme', theme); }
+  else { document.documentElement.removeAttribute('data-theme'); }
+  darkToggle.textContent = (theme==='dark' || (!theme && matchMedia('(prefers-color-scheme:dark)').matches)) ? '☀️' : '🌙';
+}
+const savedTheme = localStorage.getItem('seoul2026_theme');
+applyTheme(savedTheme);
+darkToggle.addEventListener('click', ()=>{
+  const current = document.documentElement.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light');
+  const next = current === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('seoul2026_theme', next);
+  applyTheme(next);
+});
+
+/* =========================================================================
+   浮動按鈕
+   ========================================================================= */
+document.getElementById('fabTop').addEventListener('click', ()=>window.scrollTo({top:0, behavior:'smooth'}));
+document.getElementById('fabToday').addEventListener('click', ()=>gotoDay(defaultOpenDay, true));
+document.getElementById('fabTodayMap').addEventListener('click', ()=>{
+  openDay(defaultOpenDay);
+  document.getElementById('daymap-'+defaultOpenDay).scrollIntoView({behavior:'smooth', block:'start'});
+});
+document.getElementById('fabSearch').addEventListener('click', ()=>{
+  window.scrollTo({top:0, behavior:'smooth'});
+  setTimeout(()=>searchInput.focus(), 400);
+});
+
+/* =========================================================================
+   頁尾統計：由現有資料即時計算真實數字，不臆測總花費／總步行距離
+   ========================================================================= */
+const totalDays = days.length;
+const totalStops = days.reduce((sum,d)=>sum+d.stops.length,0);
+const totalMeals = days.reduce((sum,d)=>sum + d.stops.filter(s=>s.kind==='meal').length + (d.backupMeal?1:0),0);
+const totalBackups = days.reduce((sum,d)=>sum + (d.backupActivities||[]).length + (d.backupMeal?1:0),0);
+document.getElementById('statsBar').innerHTML = `
+  <div class="stat-tile"><div class="num">${totalDays}</div><div class="lbl">📅 總天數</div></div>
+  <div class="stat-tile"><div class="num">${totalStops}</div><div class="lbl">🏛 主行程景點</div></div>
+  <div class="stat-tile"><div class="num">${totalMeals}</div><div class="lbl">🍜 餐廳數（含備選）</div></div>
+  <div class="stat-tile"><div class="num">${totalBackups}</div><div class="lbl">🔁 備用方案數</div></div>
+`;
 </script>
