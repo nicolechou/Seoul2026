@@ -535,9 +535,13 @@ const days = [
       {kind:'fan', name:'Photoism Box 明洞店', ko:'포토이즘박스 호텔스카이파크센트럴명동점', query:'포토이즘박스 호텔스카이파크센트럴명동점', duration:'15–20分鐘（拍貼）', addr:'서울 중구 명동9길 16', slot:'夜晚', short:'明洞人氣拍貼機，晚上採買後順路留念',
         transit:{mode:'walk', text:'Olive Young明洞Town步行約5分鐘可達'},
         desc:'位於Hotel Skypark Central明洞店1樓（Lucky Ducky咖啡廳門口），韓國人氣拍貼機連鎖店，適合逛街尾聲拍張紀念照。',
-        rating:'明洞人氣拍貼機店', nearby:'Hotel Skypark Central明洞店1樓，明洞商圈內'}
+        rating:'明洞人氣拍貼機店', nearby:'Hotel Skypark Central明洞店1樓，明洞商圈內'},
+      {kind:'sight', name:'南山＋N首爾塔', ko:'N서울타워', query:'N서울타워', duration:'60–90分鐘（登塔＋拍照）', slot:'夜晚', short:'逛街後順路登塔看夜景，情人鎖牆', website:'https://www.nseoultower.com',
+        transit:{mode:'walk', text:'明洞商圈步行約10–15分鐘（上坡路段，建議穿好走的鞋），或計程車約5–10分鐘至纜車站'},
+        desc:'逛完明洞後順路走過去，搭乘纜車登頂俯瞰首爾市區全景，塔下有著名的「情人鎖牆」，適合看夜景收尾。平日營業10:00–22:30，週末／假日10:00–23:00，不趕時間可以慢慢逛。',
+        rating:'4.2（TripAdvisor，9,600+則評論）', nearby:'塔旁即為情人鎖鐵絲網景點，離飯店最近的一站'}
     ],
-    endNote:'明洞 → 飯店：步行約15分鐘，或計程車5分鐘'
+    endNote:'南山＋N首爾塔 → 飯店：計程車約10分鐘（南山鄰近忠武路，車程很短）'
   },
   {
     n:2, iso:'2026-08-24', date:"8/24（一）", theme:"景福宮周邊：韓服＋北村＋昌德宮＋仁寺洞＋HiKR GROUND＋一隻雞", shortTitle:'鐘路區：景福宮周邊韓服巡禮', emoji:'🏯', color:'--d2',
@@ -577,18 +581,9 @@ const days = [
       {kind:'meal', name:'陳玉華奶奶元祖一隻雞', ko:'진옥화할매원조닭한마리', query:'진옥화할매원조닭한마리', duration:'60–90分鐘（晚餐）', slot:'晚餐', short:'東大門一隻雞元祖名店',
         transit:{mode:'taxi', text:'廣藏市場→東大門：計程車約5–10分鐘；或步行約15分鐘'},
         desc:'1978年創立，東大門一隻雞一條街的元祖名店，只賣닭한마리單一菜色，湯頭濃郁，可加點年糕、麵條等各式사리，犒賞逛了一整天的雙腿。',
-        rating:'diningcode★4.3', nearby:'位於東大門綜合市場食街，同條巷弄還有多家닭한마리老店'},
-      {kind:'sight', name:'東大門SPAREX汗蒸幕桑拿', ko:'스파렉스 동대문점', query:'SPAREX 동대문', duration:'不限（可過夜）', slot:'夜晚', short:'24小時汗蒸幕，敷面膜消水腫',
-        transit:{mode:'walk', text:'步行約5–10分鐘'},
-        desc:'24小時營業的傳統汗蒸幕桑拿，敷面膜、喝冰甜米釀消水腫，適合追星走跳一整天後的深夜收尾行程。',
-        rating:'東大門在地24小時桑拿', nearby:'可直接在此過夜留宿，隔天再返回或直接前往下一日行程'}
+        rating:'diningcode★4.3', nearby:'位於東大門綜合市場食街，同條巷弄還有多家닭한마리老店'}
     ],
-    endNote:'若不留宿桑拿，SPAREX → 飯店：計程車約15–20分鐘',
-    backupActivities:[
-      {kind:'sight', name:'南山＋N首爾塔', ko:'N서울타워', query:'N서울타워', duration:'60–90分鐘（登塔＋拍照）', website:'https://www.nseoultower.com',
-        desc:'搭乘纜車登頂俯瞰首爾市區全景，塔下有著名的「情人鎖牆」。平日營業10:00–22:30，週末／假日10:00–23:00。距離Day2主行程（景福宮／東大門一帶）較遠，需另外搭車約20–25分鐘，體力與時間允許再考慮加入。',
-        rating:'4.2（TripAdvisor，9,600+則評論）', nearby:'需從東大門或明洞另外搭車前往，非順路備案'}
-    ],
+    endNote:'陳玉華一隻雞 → 飯店：計程車約10分鐘',
     backupMeal:{kind:'meal', name:'원조원할매닭한마리', ko:'元祖元奶奶一隻雞', query:'원조원할매닭한마리', duration:'60–90分鐘（晚餐）',
       desc:'同樣位於東大門一隻雞一條街，陳玉華客滿時的在地備案，同屬人氣排隊名店。',
       rating:'diningcode★3.9', nearby:'與진옥화할매同條巷弄，幾乎零移動'}
@@ -623,9 +618,13 @@ const days = [
       {kind:'sight', name:'東大門設計廣場 DDP', ko:'동대문디자인플라자', query:'동대문디자인플라자', duration:'60–90分鐘（夜間散策＋展覽）', slot:'夜晚', short:'建築夜拍',
         transit:{mode:'subway', text:'藥水站搭3號線轉2號線，3站即達東大門歷史文化公園站，1號出口直通'},
         desc:'札哈．哈蒂設計的流線建築地標，像一艘降落在市中心的銀色巨型飛碟，夜晚點燈後科技感十足，也常是K-pop頒獎典禮、時裝週與MV的拍攝背景。',
-        rating:'首爾建築地標', nearby:'東大門歷史文化公園站1號出口直通'}
+        rating:'首爾建築地標', nearby:'東大門歷史文化公園站1號出口直通'},
+      {kind:'sight', name:'東大門SPAREX汗蒸幕桑拿', ko:'스파렉스 동대문점', query:'SPAREX 동대문', duration:'不限（可過夜）', slot:'夜晚', short:'24小時汗蒸幕，敷面膜消水腫',
+        transit:{mode:'walk', text:'DDP步行約5–10分鐘，同屬東大門歷史文化公園一帶'},
+        desc:'24小時營業的傳統汗蒸幕桑拿，敷面膜、喝冰甜米釀消水腫，適合逛完聖水洞＋DDP一整天後的深夜收尾行程。',
+        rating:'東大門在地24小時桑拿', nearby:'可直接在此過夜留宿，隔天再前往下一日行程'}
     ],
-    endNote:'DDP → 飯店：地鐵東大門歷史文化公園→忠武路（約2站），約10分鐘；或計程車約10分鐘',
+    endNote:'若不留宿桑拿，SPAREX → 飯店：計程車約15–20分鐘',
     backupActivities:[
       {kind:'sight', name:'大林倉庫', ko:'대림창고', query:'대림창고 성수', duration:'20–30分鐘（拍照喝咖啡）',
         desc:'1970年代碾米廠改建的紅磚藝廊咖啡廳。',
