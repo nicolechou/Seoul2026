@@ -1,0 +1,807 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>首爾六日：旅遊記帳 8/23–8/28</title>
+<style>
+:root{
+  --paper:#EEEAE0; --paper-raised:#F7F4EC; --paper-sunken:#E4DFD2;
+  --ink:#23262B; --ink-soft:#6A6559; --ink-faint:#9C9689;
+  --gold:#A2823F; --gold-soft:#C9B27C; --rail:#CFC7B2;
+  --card-border:rgba(35,38,43,0.10); --shadow:rgba(60,50,30,0.08);
+  --done-bg:rgba(80,150,110,0.10); --done-ink:#3E7A55;
+  --bad:#C0453D; --bad-bg:rgba(192,69,61,0.10);
+  --cat-food:#D97706; --cat-transport:#6B7280; --cat-hotel:#7C4FE0;
+  --cat-shop:#D6437B; --cat-sight:#2F6FE0; --cat-fan:#0EA5A4; --cat-other:#8A8578;
+  --font-display:"Noto Serif TC","Songti TC","PMingLiU","Iowan Old Style",serif;
+  --font-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Segoe UI",sans-serif;
+}
+:root[data-theme="dark"]{
+  --paper:#181B15; --paper-raised:#20241B; --paper-sunken:#12140F;
+  --ink:#EDE8DC; --ink-soft:#ACA595; --ink-faint:#726C5F;
+  --gold:#D2B26E; --gold-soft:#C9B27C; --rail:#3A3C31;
+  --card-border:rgba(237,232,220,0.10); --shadow:rgba(0,0,0,0.35);
+  --done-bg:rgba(80,150,110,0.16); --done-ink:#8FD6A8;
+  --bad:#E07A73; --bad-bg:rgba(224,122,115,0.14);
+  --cat-food:#F0A94E; --cat-transport:#9CA3AF; --cat-hotel:#B39DFF;
+  --cat-shop:#F08FB7; --cat-sight:#6FA0FF; --cat-fan:#4FD8D6; --cat-other:#A39D8C;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#181B15; --paper-raised:#20241B; --paper-sunken:#12140F;
+    --ink:#EDE8DC; --ink-soft:#ACA595; --ink-faint:#726C5F;
+    --gold:#D2B26E; --gold-soft:#C9B27C; --rail:#3A3C31;
+    --card-border:rgba(237,232,220,0.10); --shadow:rgba(0,0,0,0.35);
+    --done-bg:rgba(80,150,110,0.16); --done-ink:#8FD6A8;
+    --bad:#E07A73; --bad-bg:rgba(224,122,115,0.14);
+    --cat-food:#F0A94E; --cat-transport:#9CA3AF; --cat-hotel:#B39DFF;
+    --cat-shop:#F08FB7; --cat-sight:#6FA0FF; --cat-fan:#4FD8D6; --cat-other:#A39D8C;
+  }
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+html,body{margin:0;padding:0;}
+body{background:var(--paper);color:var(--ink);font-family:var(--font-body);line-height:1.6;-webkit-font-smoothing:antialiased;}
+a{color:inherit;}
+button{font-family:inherit;cursor:pointer;}
+input,select{font-family:inherit;}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px;}
+
+header.hero{
+  background:radial-gradient(1200px 300px at 20% -10%, color-mix(in srgb, var(--gold) 14%, transparent), transparent), var(--paper-raised);
+  border-bottom:1px solid var(--card-border);
+  padding:36px 0 26px;
+}
+.header-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
+.eyebrow{font-size:12.5px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);font-weight:600;display:flex;align-items:center;gap:10px;}
+.eyebrow::before{content:"";width:26px;height:1px;background:var(--gold);display:inline-block;}
+h1.title{font-family:var(--font-display);font-weight:700;font-size:clamp(26px,4.6vw,40px);margin:12px 0 8px;letter-spacing:0.01em;}
+.subtitle{color:var(--ink-soft);font-size:14.5px;max-width:64ch;}
+.backlink{font-size:13px;color:var(--ink-soft);text-decoration:none;border:1px solid var(--card-border);border-radius:999px;padding:7px 14px;white-space:nowrap;}
+.backlink:hover{border-color:var(--gold);color:var(--ink);}
+.icon-btn{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;border:1px solid var(--card-border);background:var(--paper);cursor:pointer;font-size:17px;line-height:1;transition:transform .15s ease, border-color .15s ease;}
+.icon-btn:hover{transform:translateY(-1px);border-color:var(--gold);}
+
+main{padding:26px 0 70px;}
+section{margin-bottom:26px;}
+h2.sec-title{font-family:var(--font-display);font-size:19px;margin:0 0 12px;display:flex;align-items:center;gap:8px;}
+.card{background:var(--paper-raised);border:1px solid var(--card-border);border-radius:14px;padding:18px 20px;box-shadow:0 2px 10px var(--shadow);}
+
+/* ---- summary cards ---- */
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;}
+.stat-card{background:var(--paper-raised);border:1px solid var(--card-border);border-radius:14px;padding:16px 18px;box-shadow:0 2px 10px var(--shadow);}
+.stat-label{font-size:12px;color:var(--ink-soft);letter-spacing:.04em;}
+.stat-value{font-family:var(--font-display);font-size:24px;font-weight:700;margin-top:4px;}
+.stat-sub{font-size:12px;color:var(--ink-faint);margin-top:2px;}
+
+/* ---- budget bar ---- */
+.budget-bar-track{height:10px;border-radius:999px;background:var(--paper-sunken);overflow:hidden;margin-top:10px;}
+.budget-bar-fill{height:100%;border-radius:999px;background:var(--gold);transition:width .3s ease;}
+.budget-bar-fill.over{background:var(--bad);}
+.budget-row{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-soft);margin-top:6px;}
+
+/* ---- forms ---- */
+.form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;align-items:end;}
+.field label{display:block;font-size:11.5px;color:var(--ink-soft);margin-bottom:4px;}
+.field input,.field select{width:100%;padding:9px 10px;border-radius:9px;border:1px solid var(--card-border);background:var(--paper);color:var(--ink);font-size:13.5px;}
+.field input:focus,.field select:focus{outline:1px solid var(--gold);}
+.btn{padding:10px 16px;border-radius:9px;border:1px solid var(--card-border);background:var(--paper);color:var(--ink);font-size:13.5px;font-weight:600;transition:border-color .15s, transform .15s;}
+.btn:hover{border-color:var(--gold);transform:translateY(-1px);}
+.btn-primary{background:var(--gold);border-color:var(--gold);color:#fff;}
+.btn-primary:hover{filter:brightness(1.05);}
+.btn-ghost{background:none;border:1px dashed var(--card-border);}
+.btn-danger{color:var(--bad);}
+.quick-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.quick-chip{font-size:12.5px;padding:6px 12px;border-radius:999px;border:1px solid var(--card-border);background:var(--paper);color:var(--ink-soft);}
+.quick-chip:hover{border-color:var(--gold);color:var(--ink);}
+
+/* ---- settings ---- */
+.settings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;}
+.currency-picker{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px;}
+.currency-tag{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;padding:6px 8px 6px 12px;border-radius:999px;border:1px solid var(--gold);color:var(--ink);background:color-mix(in srgb, var(--gold) 10%, var(--paper));}
+.currency-tag.base{border-color:var(--card-border);background:var(--paper);color:var(--ink-soft);}
+.currency-tag .rm{width:18px;height:18px;border-radius:50%;border:none;background:var(--paper-sunken);color:var(--ink-soft);font-size:11px;line-height:1;display:inline-flex;align-items:center;justify-content:center;}
+.currency-tag .rm:hover{background:var(--bad-bg);color:var(--bad);}
+.rate-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:12px;}
+.rate-field label{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink-soft);margin-bottom:4px;}
+
+/* ---- table/list ---- */
+.expense-list{display:flex;flex-direction:column;gap:8px;margin-top:6px;}
+.expense-row{display:grid;grid-template-columns:44px 1fr auto auto auto;gap:10px;align-items:center;padding:11px 12px;border-radius:11px;background:var(--paper);border:1px solid var(--card-border);}
+.cat-badge{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;background:color-mix(in srgb, var(--c) 16%, transparent);}
+.exp-main{min-width:0;}
+.exp-title{font-size:13.5px;font-weight:600;display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.exp-meta{font-size:11.5px;color:var(--ink-faint);margin-top:2px;}
+.tag{font-size:10.5px;padding:2px 7px;border-radius:999px;background:var(--paper-sunken);color:var(--ink-soft);}
+.exp-amount{font-size:14px;font-weight:700;white-space:nowrap;text-align:right;}
+.exp-amount .twd{font-size:11px;color:var(--ink-faint);font-weight:500;display:block;}
+.row-actions{display:flex;gap:4px;}
+.icon-mini{width:28px;height:28px;border-radius:8px;border:1px solid var(--card-border);background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--ink-soft);}
+.icon-mini:hover{border-color:var(--gold);color:var(--ink);}
+.empty-note{padding:30px;text-align:center;color:var(--ink-faint);font-size:13.5px;}
+
+/* ---- charts ---- */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:640px){.chart-grid{grid-template-columns:1fr;}}
+.donut-wrap{display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.legend{display:flex;flex-direction:column;gap:6px;font-size:12.5px;flex:1;min-width:150px;}
+.legend-item{display:flex;align-items:center;gap:7px;justify-content:space-between;}
+.legend-left{display:flex;align-items:center;gap:7px;}
+.legend-dot{width:9px;height:9px;border-radius:3px;}
+.bar-chart{display:flex;flex-direction:column;gap:8px;}
+.bar-row{display:grid;grid-template-columns:56px 1fr 70px;gap:8px;align-items:center;font-size:12px;}
+.bar-track{height:16px;border-radius:6px;background:var(--paper-sunken);overflow:hidden;}
+.bar-fill{height:100%;border-radius:6px;background:var(--gold);}
+
+/* ---- converter ---- */
+.converter{display:flex;gap:10px;align-items:end;flex-wrap:wrap;}
+.converter .field{width:150px;}
+.swap-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--card-border);background:var(--paper);font-size:15px;}
+.conv-result{font-family:var(--font-display);font-size:20px;font-weight:700;}
+
+footer.foot{padding:26px 0 60px;text-align:center;color:var(--ink-faint);font-size:12px;}
+.backup-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="header-top">
+      <div style="flex:1;min-width:240px;">
+        <div class="eyebrow">SEOUL · 2026.08.23 – 08.28</div>
+        <h1 class="title">旅遊記帳</h1>
+        <p class="subtitle">記錄六日旅程的每一筆花費，自動換算台幣，依分類與日期視覺化總開銷。資料僅儲存在此瀏覽器（localStorage），建議定期使用下方「備份」匯出 JSON。</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;align-items:flex-end;">
+        <div style="display:flex;gap:8px;">
+          <a class="backlink" href="首爾行程_0823-0828.html">← 回行程總覽</a>
+          <button class="icon-btn" id="darkToggle" title="切換深色模式" aria-label="切換深色模式">🌙</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section>
+    <h2 class="sec-title">💰 總覽</h2>
+    <div class="summary-grid" id="summaryGrid"></div>
+    <div class="card" style="margin-top:12px;" id="budgetCard"></div>
+  </section>
+
+  <section>
+    <h2 class="sec-title">⚙️ 設定</h2>
+    <div class="card">
+      <div class="settings-grid">
+        <div class="field">
+          <label>總預算（TWD，可留空）</label>
+          <input type="number" step="1" id="budgetInput" placeholder="例如 30000">
+        </div>
+        <div class="field">
+          <label>同行人數（分帳用）</label>
+          <input type="number" step="1" min="1" id="travelerCount" value="1">
+        </div>
+      </div>
+
+      <p class="stat-label" style="margin-top:16px;">常用貨幣（從下拉選單新增要在記帳／換算選單中顯示的幣別）</p>
+      <div style="display:flex;gap:8px;align-items:end;flex-wrap:wrap;">
+        <div class="field" style="width:200px;">
+          <label>新增幣別</label>
+          <select id="addCurrencySelect"></select>
+        </div>
+        <button class="btn" id="addCurrencyBtn">＋ 加入常用貨幣</button>
+      </div>
+      <div class="currency-picker" id="currencyPicker"></div>
+
+      <p class="stat-label" style="margin-top:14px;">匯率設定（1 單位 = ? TWD）</p>
+      <div class="rate-grid" id="rateGrid"></div>
+
+      <p style="font-size:11.5px;color:var(--ink-faint);margin:12px 0 0;">💡 出發前／旅程中可上網查即時匯率更新這裡的數字；換算全部以此匯率為準，並非即時牌告匯率。</p>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec-title">🔁 快速匯率換算</h2>
+    <div class="card">
+      <div class="converter">
+        <div class="field">
+          <label>幣別</label>
+          <select id="convCurrency"></select>
+        </div>
+        <div class="field">
+          <label id="convFromLabel">外幣金額</label>
+          <input type="number" id="convFrom" placeholder="輸入金額">
+        </div>
+        <button class="swap-btn" id="swapBtn" title="交換">⇄</button>
+        <div class="field">
+          <label>TWD 台幣</label>
+          <input type="number" id="convTWD" placeholder="輸入台幣">
+        </div>
+        <div style="flex:1;min-width:140px;">
+          <div class="stat-label">換算結果</div>
+          <div class="conv-result" id="convResult">—</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec-title">➕ 新增花費</h2>
+    <div class="card">
+      <div class="form-grid">
+        <div class="field">
+          <label>日期</label>
+          <select id="expDay"></select>
+        </div>
+        <div class="field">
+          <label>分類</label>
+          <select id="expCat"></select>
+        </div>
+        <div class="field">
+          <label>金額</label>
+          <input type="number" step="0.01" id="expAmount" placeholder="0">
+        </div>
+        <div class="field">
+          <label>幣別</label>
+          <select id="expCurrency"></select>
+        </div>
+        <div class="field">
+          <label>付款方式</label>
+          <select id="expPayment">
+            <option>現金</option>
+            <option>信用卡</option>
+            <option>交通卡／T-money</option>
+            <option>行動支付</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>備註（選填）</label>
+          <input type="text" id="expNote" placeholder="例如：明洞午餐">
+        </div>
+        <div class="field" style="display:flex;align-items:center;gap:6px;padding-bottom:9px;">
+          <input type="checkbox" id="expSplit" style="width:auto;">
+          <label style="margin:0;" for="expSplit">依人數均分</label>
+        </div>
+        <div class="field">
+          <button class="btn btn-primary" id="addExpBtn" style="width:100%;">新增</button>
+        </div>
+      </div>
+      <div class="quick-row" id="quickRow"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec-title">📊 花費視覺化</h2>
+    <div class="chart-grid">
+      <div class="card">
+        <div class="stat-label" style="margin-bottom:8px;">依分類佔比</div>
+        <div class="donut-wrap">
+          <svg width="130" height="130" viewBox="0 0 42 42" id="donutSvg"></svg>
+          <div class="legend" id="donutLegend"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="stat-label" style="margin-bottom:8px;">依日期花費（TWD）</div>
+        <div class="bar-chart" id="dayBarChart"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec-title">🧾 花費明細</h2>
+    <div class="card">
+      <div class="expense-list" id="expenseList"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec-title">📦 資料備份</h2>
+    <div class="card">
+      <p style="font-size:13px;color:var(--ink-soft);margin:0;">資料只存在這個瀏覽器裡，換裝置或清除快取會遺失。建議旅程結束（或每天）匯出一次備份。</p>
+      <div class="backup-row">
+        <button class="btn" id="exportJsonBtn">⬇ 匯出 JSON 備份</button>
+        <label class="btn" style="display:inline-flex;align-items:center;">⬆ 匯入 JSON 備份
+          <input type="file" id="importJsonInput" accept="application/json" style="display:none;">
+        </label>
+        <button class="btn" id="exportCsvBtn">⬇ 匯出 CSV（可用 Excel 開啟）</button>
+        <button class="btn btn-danger" id="clearAllBtn">🗑 清空所有記錄</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">首爾六日旅遊記帳 · 資料儲存於本機瀏覽器</footer>
+
+<script>
+const THEME_KEY='seoul2026_theme';
+const DATA_KEY='seoul2026_expenses';
+const SETTINGS_KEY='seoul2026_expense_settings';
+
+const DAYS=[
+  {n:1,date:'08/23（日）'},{n:2,date:'08/24（一）'},{n:3,date:'08/25（二）'},
+  {n:4,date:'08/26（三）'},{n:5,date:'08/27（四）'},{n:6,date:'08/28（五）'}
+];
+const CATEGORIES=[
+  {key:'food',label:'餐飲',icon:'🍜',c:'var(--cat-food)'},
+  {key:'transport',label:'交通',icon:'🚇',c:'var(--cat-transport)'},
+  {key:'hotel',label:'住宿',icon:'🏨',c:'var(--cat-hotel)'},
+  {key:'shop',label:'購物',icon:'🛍',c:'var(--cat-shop)'},
+  {key:'sight',label:'景點／門票',icon:'🎫',c:'var(--cat-sight)'},
+  {key:'fan',label:'追星',icon:'⭐',c:'var(--cat-fan)'},
+  {key:'other',label:'其他',icon:'💼',c:'var(--cat-other)'}
+];
+const QUICK_TEMPLATES=[
+  {label:'交通卡儲值 10000₩',day:1,cat:'transport',amount:10000,currency:'KRW',note:'T-money 儲值'},
+  {label:'超商 5000₩',cat:'food',amount:5000,currency:'KRW',note:'便利商店'},
+  {label:'咖啡 6000₩',cat:'food',amount:6000,currency:'KRW',note:'咖啡'},
+  {label:'計程車 8000₩',cat:'transport',amount:8000,currency:'KRW',note:'計程車'}
+];
+// 常用貨幣清單：code / 顯示名稱 / 預設匯率（1 單位 = ? TWD）。TWD 為基準幣別，恆為 1 且恆啟用。
+const CURRENCIES=[
+  {code:'TWD',label:'台幣',flag:'🇹🇼',base:true,defaultRate:1},
+  {code:'KRW',label:'韓元',flag:'🇰🇷',defaultRate:0.0227},
+  {code:'USD',label:'美元',flag:'🇺🇸',defaultRate:32.3},
+  {code:'JPY',label:'日圓',flag:'🇯🇵',defaultRate:0.21},
+  {code:'EUR',label:'歐元',flag:'🇪🇺',defaultRate:35.5},
+  {code:'CNY',label:'人民幣',flag:'🇨🇳',defaultRate:4.5},
+  {code:'HKD',label:'港幣',flag:'🇭🇰',defaultRate:4.15},
+  {code:'GBP',label:'英鎊',flag:'🇬🇧',defaultRate:41},
+  {code:'THB',label:'泰銖',flag:'🇹🇭',defaultRate:0.93},
+  {code:'SGD',label:'新加坡幣',flag:'🇸🇬',defaultRate:24}
+];
+function currencyInfo(code){return CURRENCIES.find(c=>c.code===code)||{code,label:code,flag:'',defaultRate:1};}
+
+const darkToggle=document.getElementById('darkToggle');
+function applyTheme(theme){
+  if(theme){document.documentElement.setAttribute('data-theme',theme);}
+  else{document.documentElement.removeAttribute('data-theme');}
+  darkToggle.textContent=(theme==='dark'||(!theme&&matchMedia('(prefers-color-scheme:dark)').matches))?'☀️':'🌙';
+}
+applyTheme(localStorage.getItem(THEME_KEY));
+darkToggle.addEventListener('click',()=>{
+  const cur=document.documentElement.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+  const next=cur==='dark'?'light':'dark';
+  localStorage.setItem(THEME_KEY,next);
+  applyTheme(next);
+});
+
+function loadData(){try{return JSON.parse(localStorage.getItem(DATA_KEY))||[];}catch(e){return [];}}
+function saveData(arr){localStorage.setItem(DATA_KEY,JSON.stringify(arr));}
+function loadSettings(){
+  const def={
+    budget:'',
+    travelers:1,
+    enabled:['TWD','KRW','USD'],
+    rates:Object.fromEntries(CURRENCIES.map(c=>[c.code,c.defaultRate]))
+  };
+  try{
+    const saved=JSON.parse(localStorage.getItem(SETTINGS_KEY))||{};
+    const merged=Object.assign({},def,saved);
+    merged.rates=Object.assign({},def.rates,saved.rates||{});
+    if(!Array.isArray(merged.enabled)||merged.enabled.length===0)merged.enabled=def.enabled;
+    if(!merged.enabled.includes('TWD'))merged.enabled.unshift('TWD');
+    return merged;
+  }catch(e){return def;}
+}
+function saveSettings(s){localStorage.setItem(SETTINGS_KEY,JSON.stringify(s));}
+
+let expenses=loadData();
+let settings=loadSettings();
+
+function toTWD(amount,currency){
+  if(currency==='TWD')return amount;
+  const rate=settings.rates[currency];
+  return rate?amount*rate:amount;
+}
+
+const budgetInput=document.getElementById('budgetInput');
+const travelerInput=document.getElementById('travelerCount');
+budgetInput.value=settings.budget;
+travelerInput.value=settings.travelers;
+[budgetInput,travelerInput].forEach(el=>{
+  el.addEventListener('input',()=>{
+    settings.budget=budgetInput.value;
+    settings.travelers=Math.max(1,parseInt(travelerInput.value)||1);
+    saveSettings(settings);
+    renderAll();
+  });
+});
+
+function addCurrency(code){
+  if(!code||settings.enabled.includes(code))return;
+  settings.enabled.push(code);
+  saveSettings(settings);
+  renderCurrencyPicker();
+  renderRateGrid();
+  populateCurrencySelects();
+  renderAll();
+}
+function removeCurrency(code){
+  if(code==='TWD')return; // 基準幣別恆啟用
+  settings.enabled=settings.enabled.filter(c=>c!==code);
+  saveSettings(settings);
+  renderCurrencyPicker();
+  renderRateGrid();
+  populateCurrencySelects();
+  renderAll();
+}
+
+function renderCurrencyPicker(){
+  const picker=document.getElementById('currencyPicker');
+  picker.innerHTML=settings.enabled.map(code=>{
+    const c=currencyInfo(code);
+    const isBase=code==='TWD';
+    return `<span class="currency-tag ${isBase?'base':''}">
+      ${c.flag} ${c.code} ${c.label}${isBase?'（基準）':''}
+      ${isBase?'':`<button class="rm" data-remove-cur="${c.code}" title="移除">✕</button>`}
+    </span>`;
+  }).join('');
+  picker.querySelectorAll('[data-remove-cur]').forEach(btn=>{
+    btn.addEventListener('click',()=>removeCurrency(btn.getAttribute('data-remove-cur')));
+  });
+
+  const addSelect=document.getElementById('addCurrencySelect');
+  const available=CURRENCIES.filter(c=>!settings.enabled.includes(c.code));
+  if(available.length===0){
+    addSelect.innerHTML=`<option value="">（所有幣別皆已加入）</option>`;
+    addSelect.disabled=true;
+  }else{
+    addSelect.disabled=false;
+    addSelect.innerHTML=available.map(c=>`<option value="${c.code}">${c.flag} ${c.code} ${c.label}</option>`).join('');
+  }
+}
+document.getElementById('addCurrencyBtn').addEventListener('click',()=>{
+  const select=document.getElementById('addCurrencySelect');
+  addCurrency(select.value);
+});
+
+function renderRateGrid(){
+  const grid=document.getElementById('rateGrid');
+  const list=settings.enabled.filter(code=>code!=='TWD');
+  if(list.length===0){
+    grid.innerHTML=`<div class="stat-sub">已啟用的外幣才會顯示匯率欄位，請先在上方勾選。</div>`;
+    return;
+  }
+  grid.innerHTML=list.map(code=>{
+    const c=currencyInfo(code);
+    return `<div class="field rate-field">
+      <label><span>${c.flag} 1 ${code} =</span><span>? TWD</span></label>
+      <input type="number" step="0.0001" data-rate="${code}" value="${settings.rates[code]}">
+    </div>`;
+  }).join('');
+  grid.querySelectorAll('[data-rate]').forEach(input=>{
+    input.addEventListener('input',()=>{
+      const code=input.getAttribute('data-rate');
+      settings.rates[code]=parseFloat(input.value)||0;
+      saveSettings(settings);
+      renderAll();
+      refreshConverter();
+    });
+  });
+}
+
+function populateCurrencySelects(){
+  const opts=settings.enabled.map(code=>{
+    const c=currencyInfo(code);
+    return `<option value="${code}">${c.flag} ${code} ${c.label}${code==='TWD'?'（基準）':''}</option>`;
+  }).join('');
+  const expCurrency=document.getElementById('expCurrency');
+  const prevExp=expCurrency.value;
+  expCurrency.innerHTML=opts;
+  if(settings.enabled.includes(prevExp))expCurrency.value=prevExp;
+  else expCurrency.value=settings.enabled.find(c=>c!=='TWD')||'TWD';
+
+  const convCurrencyOpts=settings.enabled.filter(c=>c!=='TWD').map(code=>{
+    const c=currencyInfo(code);
+    return `<option value="${code}">${c.flag} ${code} ${c.label}</option>`;
+  }).join('');
+  const convCurrency=document.getElementById('convCurrency');
+  const prevConv=convCurrency.value;
+  convCurrency.innerHTML=convCurrencyOpts||`<option value="">（無外幣可選）</option>`;
+  if(settings.enabled.includes(prevConv))convCurrency.value=prevConv;
+}
+
+renderCurrencyPicker();
+renderRateGrid();
+populateCurrencySelects();
+
+const expDay=document.getElementById('expDay');
+DAYS.forEach(d=>expDay.insertAdjacentHTML('beforeend',`<option value="${d.n}">Day${d.n}・${d.date}</option>`));
+const expCat=document.getElementById('expCat');
+CATEGORIES.forEach(c=>expCat.insertAdjacentHTML('beforeend',`<option value="${c.key}">${c.icon} ${c.label}</option>`));
+
+const quickRow=document.getElementById('quickRow');
+QUICK_TEMPLATES.forEach(t=>{
+  const chip=document.createElement('button');
+  chip.className='quick-chip';
+  chip.textContent='＋ '+t.label;
+  chip.addEventListener('click',()=>{
+    addExpense({
+      day:t.day||parseInt(expDay.value),
+      cat:t.cat,amount:t.amount,currency:t.currency,
+      payment:'現金',note:t.note,split:false
+    });
+  });
+  quickRow.appendChild(chip);
+});
+
+function addExpense(e){
+  expenses.push(Object.assign({id:Date.now()+'-'+Math.random().toString(36).slice(2)},e));
+  saveData(expenses);
+  renderAll();
+}
+
+document.getElementById('addExpBtn').addEventListener('click',()=>{
+  const amount=parseFloat(document.getElementById('expAmount').value);
+  if(!amount||amount<=0){document.getElementById('expAmount').focus();return;}
+  addExpense({
+    day:parseInt(expDay.value),
+    cat:expCat.value,
+    amount:amount,
+    currency:document.getElementById('expCurrency').value,
+    payment:document.getElementById('expPayment').value,
+    note:document.getElementById('expNote').value.trim(),
+    split:document.getElementById('expSplit').checked
+  });
+  document.getElementById('expAmount').value='';
+  document.getElementById('expNote').value='';
+  document.getElementById('expSplit').checked=false;
+});
+
+function deleteExpense(id){
+  expenses=expenses.filter(e=>e.id!==id);
+  saveData(expenses);
+  renderAll();
+}
+
+function catInfo(key){return CATEGORIES.find(c=>c.key===key)||CATEGORIES[CATEGORIES.length-1];}
+function dayInfo(n){return DAYS.find(d=>d.n===n)||{n:n,date:''};}
+function fmt(n){return Math.round(n).toLocaleString('zh-Hant');}
+const ZERO_DECIMAL_CURRENCIES=['KRW','JPY','TWD'];
+function fmtCur(n,currency){
+  const digits=ZERO_DECIMAL_CURRENCIES.includes(currency)?0:2;
+  return n.toLocaleString('zh-Hant',{minimumFractionDigits:0,maximumFractionDigits:digits});
+}
+
+function renderSummary(){
+  const totalTWD=expenses.reduce((s,e)=>s+toTWD(e.amount,e.currency),0);
+  const days=new Set(expenses.map(e=>e.day));
+  const dayCount=days.size||1;
+  const avgPerDay=totalTWD/dayCount;
+  const perPerson=totalTWD/settings.travelers;
+
+  const byCurrency={};
+  expenses.forEach(e=>{byCurrency[e.currency]=(byCurrency[e.currency]||0)+e.amount;});
+  const currencyBreakdown=Object.keys(byCurrency)
+    .filter(code=>code!=='TWD')
+    .map(code=>`${currencyInfo(code).flag} ${fmtCur(byCurrency[code],code)} ${code}`)
+    .join(' ・ ')||'—';
+
+  const grid=document.getElementById('summaryGrid');
+  grid.innerHTML=`
+    <div class="stat-card">
+      <div class="stat-label">總花費（TWD）</div>
+      <div class="stat-value">NT$ ${fmt(totalTWD)}</div>
+      <div class="stat-sub">共 ${expenses.length} 筆記錄</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">外幣原始花費</div>
+      <div class="stat-value" style="font-size:15px;line-height:1.5;">${currencyBreakdown}</div>
+      <div class="stat-sub">依目前匯率換算</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">平均每日花費</div>
+      <div class="stat-value">NT$ ${fmt(avgPerDay)}</div>
+      <div class="stat-sub">已記錄 ${dayCount} 天</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">每人分攤（${settings.travelers} 人）</div>
+      <div class="stat-value">NT$ ${fmt(perPerson)}</div>
+      <div class="stat-sub">總花費 ÷ 同行人數</div>
+    </div>
+  `;
+
+  const budgetCard=document.getElementById('budgetCard');
+  const budget=parseFloat(settings.budget);
+  if(!budget||budget<=0){
+    budgetCard.innerHTML=`<div class="stat-label">尚未設定總預算 — 於上方「設定」輸入金額即可看到進度條。</div>`;
+  }else{
+    const pct=Math.min(100,(totalTWD/budget)*100);
+    const over=totalTWD>budget;
+    budgetCard.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:baseline;">
+        <div class="stat-label">預算進度</div>
+        <div style="font-weight:700;color:${over?'var(--bad)':'var(--ink)'};">NT$ ${fmt(totalTWD)} / NT$ ${fmt(budget)}</div>
+      </div>
+      <div class="budget-bar-track"><div class="budget-bar-fill ${over?'over':''}" style="width:${pct}%;"></div></div>
+      <div class="budget-row">
+        <span>${over?'⚠️ 已超出預算 NT$ '+fmt(totalTWD-budget):'剩餘 NT$ '+fmt(budget-totalTWD)}</span>
+        <span>${pct.toFixed(0)}%</span>
+      </div>
+    `;
+  }
+}
+
+function renderDonut(){
+  const totals={};
+  CATEGORIES.forEach(c=>totals[c.key]=0);
+  let grand=0;
+  expenses.forEach(e=>{const v=toTWD(e.amount,e.currency);totals[e.cat]=(totals[e.cat]||0)+v;grand+=v;});
+
+  const svg=document.getElementById('donutSvg');
+  const legend=document.getElementById('donutLegend');
+  if(grand<=0){
+    svg.innerHTML=`<circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--rail)" stroke-width="5"></circle>`;
+    legend.innerHTML=`<div class="stat-sub">尚無資料</div>`;
+    return;
+  }
+  let offset=25;
+  let segs='';
+  let legendHtml='';
+  CATEGORIES.forEach(c=>{
+    const v=totals[c.key];
+    if(v<=0)return;
+    const pct=(v/grand)*100;
+    segs+=`<circle cx="21" cy="21" r="15.9" fill="none" stroke="${c.c}" stroke-width="5" stroke-dasharray="${pct} ${100-pct}" stroke-dashoffset="${offset}"></circle>`;
+    offset-=pct;
+    legendHtml+=`<div class="legend-item">
+      <div class="legend-left"><span class="legend-dot" style="background:${c.c};"></span>${c.icon} ${c.label}</div>
+      <div>NT$ ${fmt(v)}（${pct.toFixed(0)}%）</div>
+    </div>`;
+  });
+  svg.innerHTML=segs;
+  legend.innerHTML=legendHtml;
+}
+
+function renderDayBars(){
+  const totals={};
+  DAYS.forEach(d=>totals[d.n]=0);
+  expenses.forEach(e=>{totals[e.day]=(totals[e.day]||0)+toTWD(e.amount,e.currency);});
+  const max=Math.max(1,...Object.values(totals));
+  const chart=document.getElementById('dayBarChart');
+  chart.innerHTML=DAYS.map(d=>{
+    const v=totals[d.n]||0;
+    const pct=(v/max)*100;
+    return `<div class="bar-row">
+      <div>Day${d.n}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;"></div></div>
+      <div style="text-align:right;">${v>0?'NT$'+fmt(v):'—'}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderList(){
+  const list=document.getElementById('expenseList');
+  if(expenses.length===0){
+    list.innerHTML=`<div class="empty-note">還沒有任何花費記錄，從上方「新增花費」開始記帳吧。</div>`;
+    return;
+  }
+  const sorted=[...expenses].sort((a,b)=>a.day-b.day||0);
+  list.innerHTML=sorted.map(e=>{
+    const c=catInfo(e.cat);
+    const d=dayInfo(e.day);
+    const twd=toTWD(e.amount,e.currency);
+    const perPersonTwd=e.split?twd/settings.travelers:null;
+    return `<div class="expense-row">
+      <div class="cat-badge" style="--c:${c.c};color:${c.c};">${c.icon}</div>
+      <div class="exp-main">
+        <div class="exp-title">${e.note||c.label}<span class="tag">Day${d.n}</span>${e.split?'<span class="tag">均分</span>':''}</div>
+        <div class="exp-meta">${d.date} · ${c.label} · ${e.payment||''}</div>
+      </div>
+      <div class="exp-amount">
+        ${fmtCur(e.amount,e.currency)} ${e.currency}
+        <span class="twd">≈ NT$ ${fmt(twd)}${perPersonTwd?'（每人 NT$ '+fmt(perPersonTwd)+'）':''}</span>
+      </div>
+      <div class="row-actions">
+        <button class="icon-mini" data-del="${e.id}" title="刪除">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+  list.querySelectorAll('[data-del]').forEach(btn=>{
+    btn.addEventListener('click',()=>deleteExpense(btn.getAttribute('data-del')));
+  });
+}
+
+function renderAll(){
+  renderSummary();
+  renderDonut();
+  renderDayBars();
+  renderList();
+}
+
+// converter
+const convCurrency=document.getElementById('convCurrency');
+const convFrom=document.getElementById('convFrom');
+const convFromLabel=document.getElementById('convFromLabel');
+const convTWD=document.getElementById('convTWD');
+const convResult=document.getElementById('convResult');
+
+function currentConvRate(){return settings.rates[convCurrency.value]||0;}
+function refreshConverter(){
+  const c=currencyInfo(convCurrency.value);
+  convFromLabel.textContent=c.code?`${c.flag} ${c.code} 金額`:'外幣金額';
+  if(convFrom.value){convFrom.dispatchEvent(new Event('input'));}
+}
+convCurrency.addEventListener('change',refreshConverter);
+convFrom.addEventListener('input',()=>{
+  const v=parseFloat(convFrom.value)||0;
+  const rate=currentConvRate();
+  const twd=v*rate;
+  convTWD.value=twd?twd.toFixed(1):'';
+  convResult.textContent=v?`${fmtCur(v,convCurrency.value)} ${convCurrency.value} ≈ NT$${twd.toFixed(1)}`:'—';
+});
+convTWD.addEventListener('input',()=>{
+  const v=parseFloat(convTWD.value)||0;
+  const rate=currentConvRate();
+  const foreign=rate?v/rate:0;
+  convFrom.value=foreign?foreign.toFixed(2):'';
+  convResult.textContent=v?`NT$${v} ≈ ${fmtCur(foreign,convCurrency.value)} ${convCurrency.value}`:'—';
+});
+document.getElementById('swapBtn').addEventListener('click',()=>{
+  const a=convFrom.value; convFrom.value=convTWD.value; convTWD.value=a;
+  convFrom.dispatchEvent(new Event('input'));
+});
+refreshConverter();
+
+// backup / export
+document.getElementById('exportJsonBtn').addEventListener('click',()=>{
+  const blob=new Blob([JSON.stringify({expenses,settings},null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='首爾記帳備份_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+});
+document.getElementById('importJsonInput').addEventListener('change',(ev)=>{
+  const file=ev.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const data=JSON.parse(reader.result);
+      if(Array.isArray(data.expenses)){
+        expenses=data.expenses;
+        saveData(expenses);
+      }
+      if(data.settings){
+        const base=loadSettings();
+        settings=Object.assign(base,data.settings);
+        settings.rates=Object.assign(base.rates,data.settings.rates||{});
+        if(!Array.isArray(settings.enabled)||settings.enabled.length===0)settings.enabled=base.enabled;
+        if(!settings.enabled.includes('TWD'))settings.enabled.unshift('TWD');
+        saveSettings(settings);
+        budgetInput.value=settings.budget;
+        travelerInput.value=settings.travelers;
+        renderCurrencyPicker();
+        renderRateGrid();
+        populateCurrencySelects();
+        refreshConverter();
+      }
+      renderAll();
+      alert('匯入成功！');
+    }catch(e){alert('檔案格式錯誤，匯入失敗。');}
+  };
+  reader.readAsText(file);
+  ev.target.value='';
+});
+document.getElementById('exportCsvBtn').addEventListener('click',()=>{
+  const header=['日期','分類','金額','幣別','約合台幣','付款方式','備註','是否均分'];
+  const rows=expenses.map(e=>{
+    const d=dayInfo(e.day);
+    return [d.date,catInfo(e.cat).label,e.amount,e.currency,Math.round(toTWD(e.amount,e.currency)),e.payment||'',e.note||'',e.split?'是':'否'];
+  });
+  const csv=[header,...rows].map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\r\n');
+  const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='首爾記帳明細_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+});
+document.getElementById('clearAllBtn').addEventListener('click',()=>{
+  if(confirm('確定要清空所有花費記錄嗎？此動作無法復原（建議先匯出備份）。')){
+    expenses=[];
+    saveData(expenses);
+    renderAll();
+  }
+});
+
+renderAll();
+</script>
