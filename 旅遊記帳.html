@@ -61,7 +61,7 @@ h1.title{font-family:var(--font-display);font-weight:700;font-size:clamp(26px,4.
 .icon-btn:hover{transform:translateY(-1px);border-color:var(--gold);}
 
 main{padding:26px 0 70px;}
-section{margin-bottom:26px;}
+section{margin-bottom:26px;scroll-margin-top:66px;}
 h2.sec-title{font-family:var(--font-display);font-size:19px;margin:0 0 12px;display:flex;align-items:center;gap:8px;}
 .card{background:var(--paper-raised);border:1px solid var(--card-border);border-radius:14px;padding:18px 20px;box-shadow:0 2px 10px var(--shadow);}
 
@@ -139,6 +139,15 @@ h2.sec-title{font-family:var(--font-display);font-size:19px;margin:0 0 12px;disp
 
 footer.foot{padding:26px 0 60px;text-align:center;color:var(--ink-faint);font-size:12px;}
 .backup-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+
+/* ---- tab nav ---- */
+nav.tabnav{position:sticky;top:0;z-index:60;background:var(--paper);border-bottom:1px solid var(--card-border);box-shadow:0 2px 8px var(--shadow);}
+.tabnav-inner{display:flex;gap:8px;overflow-x:auto;padding:10px 20px;max-width:960px;margin:0 auto;scrollbar-width:thin;}
+.tabnav-inner::-webkit-scrollbar{height:5px;}
+.tabnav-inner::-webkit-scrollbar-thumb{background:var(--rail);border-radius:4px;}
+.tab-pill{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;border:1px solid var(--card-border);background:var(--paper-raised);color:var(--ink-soft);font-size:13px;font-weight:600;white-space:nowrap;text-decoration:none;transition:border-color .15s,color .15s,background .15s;}
+.tab-pill:hover{border-color:var(--gold);color:var(--ink);}
+.tab-pill.active{border-color:var(--gold);background:var(--gold);color:#fff;}
 </style>
 
 <header class="hero">
@@ -159,15 +168,26 @@ footer.foot{padding:26px 0 60px;text-align:center;color:var(--ink-faint);font-si
   </div>
 </header>
 
+<nav class="tabnav" id="tabnav">
+  <div class="tabnav-inner">
+    <a class="tab-pill" href="#sec-overview" data-tab="sec-overview">💰 總覽</a>
+    <a class="tab-pill" href="#sec-settings" data-tab="sec-settings">⚙️ 設定</a>
+    <a class="tab-pill" href="#sec-converter" data-tab="sec-converter">🔁 快速匯率換算</a>
+    <a class="tab-pill" href="#sec-add" data-tab="sec-add">➕ 新增花費</a>
+    <a class="tab-pill" href="#sec-charts" data-tab="sec-charts">📊 花費視覺化</a>
+    <a class="tab-pill" href="#sec-list" data-tab="sec-list">🧾 花費明細</a>
+  </div>
+</nav>
+
 <main class="wrap">
 
-  <section>
+  <section id="sec-overview">
     <h2 class="sec-title">💰 總覽</h2>
     <div class="summary-grid" id="summaryGrid"></div>
     <div class="card" style="margin-top:12px;" id="budgetCard"></div>
   </section>
 
-  <section>
+  <section id="sec-settings">
     <h2 class="sec-title">⚙️ 設定</h2>
     <div class="card">
       <div class="settings-grid">
@@ -198,7 +218,7 @@ footer.foot{padding:26px 0 60px;text-align:center;color:var(--ink-faint);font-si
     </div>
   </section>
 
-  <section>
+  <section id="sec-converter">
     <h2 class="sec-title">🔁 快速匯率換算</h2>
     <div class="card">
       <div class="converter">
@@ -223,7 +243,7 @@ footer.foot{padding:26px 0 60px;text-align:center;color:var(--ink-faint);font-si
     </div>
   </section>
 
-  <section>
+  <section id="sec-add">
     <h2 class="sec-title">➕ 新增花費</h2>
     <div class="card">
       <div class="form-grid">
@@ -268,7 +288,7 @@ footer.foot{padding:26px 0 60px;text-align:center;color:var(--ink-faint);font-si
     </div>
   </section>
 
-  <section>
+  <section id="sec-charts">
     <h2 class="sec-title">📊 花費視覺化</h2>
     <div class="chart-grid">
       <div class="card">
@@ -285,7 +305,7 @@ footer.foot{padding:26px 0 60px;text-align:center;color:var(--ink-faint);font-si
     </div>
   </section>
 
-  <section>
+  <section id="sec-list">
     <h2 class="sec-title">🧾 花費明細</h2>
     <div class="card">
       <div class="expense-list" id="expenseList"></div>
@@ -804,4 +824,16 @@ document.getElementById('clearAllBtn').addEventListener('click',()=>{
 });
 
 renderAll();
+
+// tab nav：scrollspy 高亮目前所在區塊
+const tabPills=[...document.querySelectorAll('.tab-pill')];
+const tabSections=tabPills.map(p=>document.getElementById(p.getAttribute('data-tab'))).filter(Boolean);
+const spy=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(!entry.isIntersecting)return;
+    const id=entry.target.id;
+    tabPills.forEach(p=>p.classList.toggle('active',p.getAttribute('data-tab')===id));
+  });
+},{rootMargin:'-72px 0px -70% 0px',threshold:0});
+tabSections.forEach(sec=>spy.observe(sec));
 </script>
